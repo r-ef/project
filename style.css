@@ -183,3 +183,16 @@ light version for students. this is also a larger version*/
 
 /* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
 dark version for company side, also a larger version */
+
+.smallbutn {
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: lightseagreen;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* styling the SMALLER buttons, same style for both sides*/
+
