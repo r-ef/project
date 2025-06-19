@@ -1,0 +1,36 @@
+<html>
+<head>
+  <title>Current Applications | Internly</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="ligbody">
+
+  <!-- Navigation Bar to go throught the other pages -->
+  <ul id="navbar">
+    <li class="dir" id="logo"><a href="studenthome.html" target="_self"><img src="website logo.png" height="50" width="auto" /></a></li>
+    <li class="dir" id="navtext"><a href="studenthome.html" target="_self">Home</a></li>
+    <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">Internships</a></li>
+    <li class="dir" id="navtext"><a href="studentapply.html" target="_self">Apply</a></li>
+    <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">Current Applications</a></li>
+    <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+    <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto" /></a></li>
+  </ul>
+
+  <form class="ligappform" action="GET"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
+    <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
+        <tr>
+            <th colspan="4" align="center"><h1>Current Applications</h1></th>
+        </tr>
+        <tr>
+          <th align="left">Internship</th>
+          <th align="left">Company</th>
+          <th align="left">Date Applied</th>
+          <th align="left">Status</th>
+        </tr>
+        <tr>
+            <td id="currapp"></td> <!-- where the list of the students outgoing applications will start-->
+        </tr>
+    </table>
+  </form>
+</body>
+</html>
