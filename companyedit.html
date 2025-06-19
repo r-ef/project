@@ -18,27 +18,27 @@
     <form class="darform" action="GET"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting data from the server-->
         <table class="signtab" border="0">
             <tr>
-                <td colspan="2" align="center"><h3>Company Account Details</h3></td>
+                <td colspan="2" align="center"><h3>Edit Account Details</h3></td>
             </tr>
             <tr>
                 <td>Company Name:</td>
-                <td id="comname"></td>
+                <td><input type="text" class="darinput" name="com_name" size="30"></td>
             </tr>
             <tr>
                 <td>Company Location:</td>
-                <td id="comloc"></td>
+                <td><input type="text" class="darinput" name="com_loc" size="30"></td>
             </tr>
             <tr>
                 <td>Company E-mail:</td>
-                <td id="comemail"></td>
+                <td><input type="email" class="darinput" name="stu_email" size="30" required></td>
             </tr>
             <tr>
                 <td>Account Password:</td>
-                <td id="comass"></td>
+                <td><input type="password" class="darinput" name="stud_pass" size="30" required></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="companyedit.html"><button type="button" class="butn">Edit Profile</button></a> 
+                    <a href="companyaccount.html"><button type="button" class="butn">Save Changes</button></a> 
                 </td>
             </tr>
         </table>

@@ -17,41 +17,43 @@
         <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
     </ul>
 
-    <form class="ligform" action="GET"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting data from the server-->
+    <form class="ligform" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using post action as i posting data to the server-->
         <table class="signtab" border="0">
             <tr>
-                <td colspan="2" align="center"><h3>Student Account Details</h3></td>
+                <td colspan="2" align="center"><h3>Edit Account Details</h3></td>
             </tr>
             <tr>
                 <td>First Name:</td>
-                <td id="fname"></td>
+                <td><input type="text" class="liginput" name="stu_fname" size="30"></td>
             </tr>
             <tr>
                 <td>Last Name:</td>
-                <td id="lname"></td>
+                <td><input type="text" class="liginput" name="stu_lname" size="30"></td>
             </tr>
             <tr>
                 <td>Date of Birth:</td>
-                <td id="dob"></td>
+                <td><input type="date" class="ligdate" name="stu_dob"></td>
             </tr>
             <tr>
                 <td>Gender:</td>
-                <td id="gend"></td>
+                <td><input type="radio" class="liginput" name="stu_gen" value="f">Female
+                <input type="radio" class="liginput" name="stu_gen" value="m">Male </td>
             </tr>
             <tr>
                 <td>E-mail:</td>
-                <td id="emad"></td>
+                <td><input type="email" class="liginput" name="stu_email" size="30"></td>
             </tr>
             <tr>
                 <td>Account Password:</td>
-                <td id="pass"></td>
+                <td><input type="password" class="liginput" name="stud_pass" size="30"></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="studentedit.html" method="_self"><button type="button" class="butn">Edit Profile</button></a>
+                    <a href="studentaccount.html" method="_self"><button type="button" class="butn">Save Changes</button></a>
                 </td>
             </tr>
         </table>
     </form>
+    <!--students will be able to update whatever info they wish by filling out the necessary input-->
 </body>
 </html>
