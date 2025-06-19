@@ -10,7 +10,7 @@
         <img src="website logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
         <!-- above, i put in the image for the website's logo and also centered it with inline css-->
 
-        <form class="ligform" action="POST"> <!--adding a class to the form tag so that i may style it easily in the css file, using post action as i am posting data to the server to get a response-->
+        <form class="ligform"> <!--adding a class to the form tag so that i may style it easily in the css file, using post action as i am posting data to the server to get a response-->
             <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
                 <tr>
                     <td colspan="2" align="center"><h3>Sign Up</h3></td>
@@ -41,11 +41,40 @@
                     <td><input type="password" class="liginput" name="stud_pass" size="30" required></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" class="butn" value="Sign up"></td>
+                    <td colspan="2"><input type="submit" class="butn" value="Sign up" onclick="signUp()"></td>
                 </tr>
             </table>
             <!--a table created where the user will have to fill out the necessary details to sign up for the website. done by using input type text, email, password, date-->
 
         </form>
     </body>
+    <script>
+        function signUp() {
+            const firstname = document.querySelector('input[name="stu_fname"]').value;
+            const lastname = document.querySelector('input[name="stu_lname"]').value;
+            const dob = document.querySelector('input[name="stu_dob"]').value;
+            const gender = document.querySelector('input[name="stu_gen"]').value;
+            const email = document.querySelector('input[name="stu_email"]').value;
+            const password = document.querySelector('input[name="stud_pass"]').value.toString();
+
+            if (email && password) {
+                // sending a post request to the server with the email and password to sign in
+
+                fetch('http://localhost:3000/studentsignup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ firstname, lastname, dob, gender, email, password })
+                }).then(response => {
+                    if (response.ok) {
+                        alert('sign in successful');
+                        window.location.href = 'studentdashboard.html';
+                    } else {
+                        alert('sign in failed');
+                    }
+                });
+            }
+        }
+    </script>
 </html>
