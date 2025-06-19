@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>Internship Application | Internly </title>
+
+        <link rel="stylesheet" href="style.css">
+        <!-- linking the css file to this page -->
+
+    </head>
+    <body class="ligbody"> <!--class for light appearance style-->
+
+        <ul id="navbar">
+            <li class="dir" id="logo"><a href="studenthome.html" target="_self"> <img src="website logo.png" height="50" width="auto" /></a> </li>
+            <li class="dir" id="navtext"><a href="studenthome.html" target="_self">Home</a></li>
+            <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">Internships</a></li>
+            <li class="dir" id="navtext"><a href="studentapply.html" target="_self">Apply</a></li>
+            <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">Current Applications</a></li>
+            <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+            <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
+        </ul>
+
+        <form class="ligform"> <!--adding a class to the form tag so that i may style it easily in the css file-->
+            <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
+                <tr>
+                    <td colspan="2" align="center"><h3>Applicant Details</h3></td>
+                </tr>
+                <tr>
+                    <td>First Name:</td>
+                    <td><input type="text" class="liginput" name="stu_fname" size="30" required></td>
+                </tr>
+                <tr>
+                    <td>Last Name:</td>
+                    <td><input type="text" class="liginput" name="stu_lname" size="30" required></td>
+                 </tr>
+                 <tr>
+                    <td>Date of Birth:</td>
+                    <td><input type="date" class="ligdate" name="stu_dob" required></td>
+                 </tr>
+                 <tr>
+                    <td>Gender:</td>
+                    <td><input type="radio" class="liginput" name="stu_gen" value="f" required>Female
+                    <input type="radio" class="liginput" name="stu_gen" value="m" required>Male </td>
+                 </tr>
+                <tr>
+                    <td>E-mail:</td>
+                    <td><input type="email" class="liginput" name="stu_email" size="30" required></td>
+                </tr>
+                <tr>
+                    <td>Resume Upload:</td>
+                    <td><input type="file" name="resume" style="margin-bottom: 15px;"></td> <!--creating some space with inline css since it's just one property-->
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" class="butn" value="Apply"></td>
+                </tr>
+            </table>
+            <!--a table created where the user will have to fill out the necessary details to sign up for the website. done by using input type text, email, password, date. 
+            these have been disabled as it will automatically fill up using nodejs based off of the student's details. all they have to do is add their resume.-->
+
+        </form>
+    </body>
+</html>

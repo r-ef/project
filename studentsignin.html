@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <title>Sign in | Internly </title>
+
+        <link rel="stylesheet" href="style.css">
+        <!-- linking the css file to this page -->
+
+    </head>
+    <body class="ligbody"> <!--class for light appearance style-->
+        <img src="website logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
+        <!-- above, i put in the image for the website's logo and also centered it with inline css-->
+
+        <form class="ligform"> <!--adding a class to the form tag so that i may style it easily in the css file-->
+            <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
+                <tr>
+                    <td colspan="2" align="center"><h3>Sign in</h3></td>
+                </tr>
+                <tr>
+                    <td>E-mail:</td>
+                    <td><input type="email" class="liginput" name="stu_email" size="30" required></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="password" class="liginput" name="stud_pass" size="30" required></td>
+                </tr>
+                <tr>    
+                    <td colspan="2"><input type="submit" class="butn" value="Sign in"></td>
+                </tr>
+            </table>
+            <!-- users are asked to sign in using their emails and passwords, done using input type email and password.-->
+            </form>
+
+            <form class="ligform">
+            <table class="signtab" border="0">
+                <tr> 
+                    <td><h3>Don't have an account? <br />
+                    Sign up now!</h3></td>
+                </tr>
+                <tr>
+                    <td><a href="studentsignup.html"><button type="button" class="butn">Sign up</button></a></td>
+                </tr>
+            </table>
+            <!--this is the section where the user may sign up if they haven't already, the button will bring them to the sign up page-->
+        </form>
+    </body>
+</html>

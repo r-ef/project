@@ -1,0 +1,168 @@
+#navbar {
+list-style-type: none;
+margin: 0;
+padding: 0;
+overflow: hidden;
+background-color: #f9fff0;
+}
+/*here i am setting up the unordered list i made for the navigation panel, making it so it removes the bullet points 
+and sets up the background, light version
+*/
+
+#darnavbar {
+list-style-type: none;
+margin: 0;
+padding: 0;
+overflow: hidden;
+background-color: darkslategrey;
+}
+
+/* dark version of nav bar for company side */
+
+li.dir{
+ float: left;
+}
+/* this is making the supposed bullet points appear in one line for the navigation panel, these items will be lined up from the left */
+
+li.log {
+float: right;
+}
+/* this is making the supposed bullet points appear in one line for the navigation panel as well, but these items will appear from the right. done it so that 
+the sign in buttons are easier to find */
+
+#stulog {
+border-right: 1.5px solid darkslategrey;
+}
+
+/*making a little line between the student sign in option and the employee on */
+
+li a {
+display: block;
+align-items: center;
+color: darkslategrey;
+padding: 5px 12px 12px 12px;
+margin: 5px;
+text-decoration: none;
+}
+
+/* this is designing the navigation panel and getting rid of the underline for the links */
+
+#darnavbar a {
+display: block;
+align-items: center;
+color: #f9fff0;
+padding: 5px 12px 12px 12px;
+margin: 5px;
+text-decoration: none;
+}
+
+/* dark version of navigation bar design */
+
+#navtext, #stulog {
+  padding-top: 30px;
+}
+
+/* this is to align the text in the navigation bar with the image logo in the navigation bar.*/
+
+li a:hover {
+border-bottom: 1px solid seagreen;
+}
+
+/*this makes a little underline on the button they hover over so they can tell that they are hovering over a specific thing */
+
+.ligbody {
+  background-color: #f9fff0;
+  font-family: 'Trebuchet MS', sans-serif;
+  color: darkslategrey;
+}
+
+/*setting up the background color, the font style and color of the font, light version for students*/
+
+
+.ligform {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  margin: 50px auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
+light version for students */
+
+.signtab {
+margin-left: auto;
+margin-right: auto;
+padding: 5px;
+}
+
+/* centering the table within the form box, same for students and company*/
+
+.liginput {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+/* styling the input type boxes, light version for student side*/
+
+
+.ligdate {
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  background-color: #f9fff0;
+  font-size: 14px;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+/* styling the input date box, light version for student side*/
+
+.butn {
+  padding: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  background-color: lightseagreen;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* styling the buttons, same style for both sides*/
+
+.darbody {
+    background-color: darkslategrey;
+    font-family:'Trebuchet MS', sans-serif;
+    color: #f9fff0; 
+}
+
+/* this is also setting up the ebackground color and the font style, as well as the color of the font. dark version for company side*/
+
+.darform {
+  background-color: #3b3b3b;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  margin: 50px auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
+dark version for company side */
+
+.darinput {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #3b3b3b;
+}
+
+/* styling the input type boxes, dark version for company side*/

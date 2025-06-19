@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>Student Sign Up | Internly </title>
+
+        <link rel="stylesheet" href="style.css">
+        <!-- linking the css file to this page -->
+
+    </head>
+    <body class="ligbody"> <!--class for light appearance style-->
+        <img src="website logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
+        <!-- above, i put in the image for the website's logo and also centered it with inline css-->
+
+        <form class="ligform"> <!--adding a class to the form tag so that i may style it easily in the css file-->
+            <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
+                <tr>
+                    <td colspan="2" align="center"><h3>Sign Up</h3></td>
+                </tr>
+                <tr>
+                    <td>First Name:</td>
+                    <td><input type="text" class="liginput" name="stu_fname" size="30" required></td>
+                </tr>
+                <tr>
+                    <td>Last Name:</td>
+                    <td><input type="text" class="liginput" name="stu_lname" size="30" required></td>
+                 </tr>
+                 <tr>
+                    <td>Date of Birth:</td>
+                    <td><input type="date" class="ligdate" name="stu_dob" required></td>
+                 </tr>
+                 <tr>
+                    <td>Gender:</td>
+                    <td><input type="radio" class="liginput" name="stu_gen" value="f" required>Female
+                    <input type="radio" class="liginput" name="stu_gen" value="m" required>Male </td>
+                 </tr>
+                <tr>
+                    <td>E-mail:</td>
+                    <td><input type="email" class="liginput" name="stu_email" size="30" required></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="password" class="liginput" name="stud_pass" size="30" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" class="butn" value="Sign up"></td>
+                </tr>
+            </table>
+            <!--a table created where the user will have to fill out the necessary details to sign up for the website. done by using input type text, email, password, date-->
+
+        </form>
+    </body>
+</html>
