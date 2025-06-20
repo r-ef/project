@@ -196,7 +196,7 @@ dark version for company side, also a larger version */
 
 /* styling the SMALLER buttons, same style for both sides*/
 
-.ligappformbig {
+.ligappformbig, .ligbox {
   background-color: white;
   padding: 30px;
   border-radius: 10px;
@@ -208,7 +208,7 @@ dark version for company side, also a larger version */
 /* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
 light version for students. this is also an even bigger version*/
 
-.darappformbig {
+.darappformbig, .darbox {
   background-color: #3b3b3b;
   padding: 30px;
   border-radius: 10px;
@@ -235,5 +235,4 @@ dark version for students. this is a slightly bigger version than original versi
 .homep {
   text-align: center;
 }
-
-/* this is aligning the text on the home page to the center. */
+/* this is to align text to the center of the page */
