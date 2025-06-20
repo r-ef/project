@@ -15,7 +15,7 @@
         <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
     </ul>
 
-    <form class="darform" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using POST action as i am sending data to the server-->
+    <form class="darform" id="companyEditForm"> <!-- added id -->
         <table class="signtab" border="0">
             <tr>
                 <td colspan="2" align="center"><h3>Edit Account Details</h3></td>
@@ -38,10 +38,31 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="companyaccount.html"><button type="button" class="butn">Save Changes</button></a> 
+                    <button type="submit" class="butn">Save Changes</button>
                 </td>
             </tr>
         </table>
     </form>
+    <script>
+    document.getElementById('companyEditForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const name = document.querySelector('input[name="com_name"]').value;
+        const location = document.querySelector('input[name="com_loc"]').value;
+        const email = document.querySelector('input[name="stu_email"]').value;
+        const password = document.querySelector('input[name="stud_pass"]').value;
+        const payload = { name, location, email, password };
+        const response = await fetch('http://localhost:3000/company/profile/edit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+            alert('Profile updated');
+            window.location.href = 'companyaccount.html';
+        } else {
+            alert('Update failed');
+        }
+    });
+    </script>
 </body>
 </html>

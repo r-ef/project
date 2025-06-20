@@ -10,7 +10,7 @@
         <img src="website admin logo.png" height="60" width="234" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
         <!-- above, i put in the image for the website's logo, admin version, and also centered it with inline css-->
 
-        <form class="darform" action="POST"> <!--adding a class to the form tag so that i may style it easily in the css file, using post action as i am posting data to the server to get a response-->
+        <form class="darform" id="companySigninForm"> <!-- removed action, added id -->
             <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
                 <tr>
                     <td colspan="2" align="center"><h3>Sign in</h3></td>
@@ -27,10 +27,29 @@
                     <td colspan="2"><input type="submit" class="butn" value="Sign in"></td>
                 </tr>
             </table>
-            </form>
-            <!-- users are asked to sign in using their emails and passwords, done using input type email and password-->
+        </form>
+        <script>
+        document.getElementById('companySigninForm').addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const email = document.querySelector('input[name="com_email"]').value;
+          const password = document.querySelector('input[name="com_pass"]').value;
+          const payload = { email, password };
+          const response = await fetch('http://localhost:3000/companysignin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (response.ok) {
+            alert('Sign in successful');
+            window.location.href = 'companyaccount.html';
+          } else {
+            alert('Sign in failed');
+          }
+        });
+        </script>
+        <!-- users are asked to sign in using their emails and passwords, done using input type email and password-->
 
-            <form class="darform">
+        <form class="darform">
             <table class="signtab" border="0">
                 <tr> 
                     <td><h3>Don't have an account? <br />

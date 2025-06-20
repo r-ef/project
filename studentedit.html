@@ -17,7 +17,7 @@
         <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
     </ul>
 
-    <form class="ligform" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using post action as i posting data to the server-->
+    <form class="ligform" id="studentEditForm">
         <table class="signtab" border="0">
             <tr>
                 <td colspan="2" align="center"><h3>Edit Account Details</h3></td>
@@ -49,11 +49,34 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="studentaccount.html" method="_self"><button type="button" class="butn">Save Changes</button></a>
+                    <button type="submit" class="butn">Save Changes</button>
                 </td>
             </tr>
         </table>
     </form>
     <!--students will be able to update whatever info they wish by filling out the necessary input-->
+    <script>
+    document.getElementById('studentEditForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const fname = document.querySelector('input[name="stu_fname"]').value;
+        const lname = document.querySelector('input[name="stu_lname"]').value;
+        const dob = document.querySelector('input[name="stu_dob"]').value;
+        const gender = document.querySelector('input[name="stu_gen"]:checked') ? document.querySelector('input[name="stu_gen"]:checked').value : '';
+        const email = document.querySelector('input[name="stu_email"]').value;
+        const password = document.querySelector('input[name="stud_pass"]').value;
+        const payload = { fname, lname, dob, gender, email, password };
+        const response = await fetch('http://localhost:3000/student/profile/edit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+            alert('Profile updated');
+            window.location.href = 'studentaccount.html';
+        } else {
+            alert('Update failed');
+        }
+    });
+    </script>
 </body>
 </html>

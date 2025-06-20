@@ -18,7 +18,7 @@
             <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
         </ul>
 
-        <form class="ligform" action="POST"> <!--adding a class to the form tag so that i may style it easily in the css file, using post action as i am posting data to the server to get a response-->
+        <form class="ligform" id="studentApplyForm"> <!-- added id -->
             <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
                 <tr>
                     <td colspan="2" align="center"><h3>Applicant Details</h3></td>
@@ -60,5 +60,31 @@
             these have been disabled as it will automatically fill up using nodejs based off of the student's details. all they have to do is add their resume.-->
 
         </form>
+        <script>
+        document.getElementById('studentApplyForm').addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const form = event.target;
+          const formData = new FormData(form);
+          // Map field names to backend expected names
+          const payload = new FormData();
+          payload.append('fname', formData.get('stu_fname'));
+          payload.append('lname', formData.get('stu_lname'));
+          payload.append('dob', formData.get('stu_dob'));
+          payload.append('gender', formData.get('stu_gen'));
+          payload.append('email', formData.get('stu_email'));
+          payload.append('resume', formData.get('resume'));
+          // You may want to add internship id or name if needed
+          const response = await fetch('http://localhost:3000/student/apply', {
+            method: 'POST',
+            body: payload
+          });
+          if (response.ok) {
+            alert('Application submitted');
+            window.location.href = 'studenthome.html';
+          } else {
+            alert('Application failed');
+          }
+        });
+        </script>
     </body>
 </html>
