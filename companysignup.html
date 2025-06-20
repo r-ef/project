@@ -9,7 +9,7 @@
         <img src="website admin logo.png" height="60" width="234" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
         <!-- above, i put in the image for the website's logo, admin version, and also centered it with inline css-->
 
-        <form class="darform" action="POST"> <!--adding a class to the form tag so that i may style it easily in the css file, using post action as i am posting data to the server to get a response-->
+        <form class="darform" id="companySignupForm"> <!-- removed action, added id -->
             <table class="signtab" border="0"> <!-- adding a class to the table tag so that i may style it easily in the css file-->
                 <tr>
                     <td colspan="2" align="center"><h3>Sign Up</h3></td>
@@ -37,6 +37,28 @@
             <!--a table created where the user will have to fill out the necessary details to sign up for the website. done by using input types.-->
 
         </form>
+
+        <script>
+        document.getElementById('companySignupForm').addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const name = document.querySelector('input[name="com_name"]').value;
+          const location = document.querySelector('input[name="com_loc"]').value;
+          const email = document.querySelector('input[name="stu_email"]').value;
+          const password = document.querySelector('input[name="stud_pass"]').value;
+          const payload = { name, location, email, password };
+          const response = await fetch('http://localhost:3000/companysignup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (response.ok) {
+            alert('Sign up successful');
+            window.location.href = 'companysignin.html';
+          } else {
+            alert('Sign up failed');
+          }
+        });
+        </script>
 
     </body>
 </html>
