@@ -22,12 +22,10 @@
         </div>
 
 <script>
-// Load student profile on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadStudentProfile();
 });
 
-// Fetch and display student profile
 async function loadStudentProfile() {
     try {
         const response = await fetch('http://localhost:3000/student/profile', {
@@ -50,18 +48,15 @@ async function loadStudentProfile() {
 
         const student = await response.json();
         
-        // Update welcome message with student name
         const welcomeMessage = document.getElementById('welcomeMessage');
         const fullName = `${student.fname || ''} ${student.lname || ''}`.trim();
         welcomeMessage.textContent = `Welcome back, ${fullName || 'Student'}!`;
 
     } catch (error) {
         console.error('Error loading student profile:', error);
-        // Keep default message if there's an error
     }
 }
 
-// Add logout functionality
 document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
     event.preventDefault();
     try {

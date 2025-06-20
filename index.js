@@ -249,7 +249,6 @@ app.post('/student/apply', upload.single('resume'), (req, res) => {
 
 app.use(express.static(path.join(__dirname)));
 
-// Serve usinternshipslist.html
 app.get('/usinternshipslist', (req, res) => {
   res.sendFile(path.join(__dirname, 'usinternshipslist.html'));
 });

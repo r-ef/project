@@ -71,9 +71,7 @@
 <script>
 let internshipId = null;
 
-// Load internship data on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Get internship ID from URL parameter
     const urlParams = new URLSearchParams(window.location.search);
     internshipId = urlParams.get('id');
     
@@ -86,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadInternshipData();
 });
 
-// Load internship data for editing
 async function loadInternshipData() {
     try {
         const response = await fetch(`http://localhost:3000/internships/${internshipId}`, {
@@ -116,7 +113,6 @@ async function loadInternshipData() {
     }
 }
 
-// Populate form with internship data
 function populateForm(internship) {
     document.getElementById('title').value = internship.title || '';
     document.getElementById('type').value = internship.type || '';
@@ -128,7 +124,6 @@ function populateForm(internship) {
     document.getElementById('description').value = internship.description || '';
 }
 
-// Handle form submission
 document.getElementById('editInternshipForm').addEventListener('submit', async function(event) {
     event.preventDefault();
     
@@ -167,7 +162,6 @@ document.getElementById('editInternshipForm').addEventListener('submit', async f
     }
 });
 
-// Add logout functionality
 document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
     event.preventDefault();
     try {

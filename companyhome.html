@@ -13,21 +13,17 @@
             <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
             <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
         </ul>
-        <!--creating the navigation bar at the top of the page, both the logo and home button takes them to the same page. the log out and account buttons are to the
-        right to make it easier to find them -->
-
+        
         <div class="darbox">
         <h2 class="homep" id="welcomeMessage">Welcome back, [Company Name]!</h2>
         <p class="homep">You have x internship postings and x applications pending for approval.</p>
         </div>
 
 <script>
-// Load company profile on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadCompanyProfile();
 });
 
-// Fetch and display company profile
 async function loadCompanyProfile() {
     try {
         const response = await fetch('http://localhost:3000/company/profile', {
@@ -58,7 +54,6 @@ async function loadCompanyProfile() {
     }
 }
 
-// Add logout functionality
 document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
     event.preventDefault();
     try {
