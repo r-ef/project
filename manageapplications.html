@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>Manage Applications | Internly </title>
+    <link rel="stylesheet" href="style.css">
+     <!-- linking the css file to this page -->
+</head>
+<body class="darbody"> <!--class for dark appearance style-->
+
+    <ul id="darnavbar">
+        <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
+        <li class="dir" id="navtext"><a href="companyhome.html" target="_self">Home</a></li>
+        <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">Manage Internships</a></li>
+        <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">Manage Applications</a></li>
+        <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+        <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
+    </ul>
+
+    <form class="darappform" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using post action as i am uploading data to the server-->
+        <table class="signtab" border="0" width="100%">
+            <tr>
+                <th colspan="3" align="center"><h1>Applicants</h1></td>
+            </tr>
+            <tr>
+                <th align="center">Applicant Details</th> 
+                <th align="center">Resume</th>
+                <th align="center">Approval</th>
+            </tr>
+            <tr>
+                <td id="manapp"></td> <!--where list of applicants will start-->
+                <td></td>
+                <td align="center"><input type="radio" class="darinput" name="approval" value="f" required>Accepted
+                <input type="radio" class="darinput" name="stu_gen" value="approval" required>Rejected 
+                <input type="submit" value="Send Response" class="smallbutn"></td>
+            </tr>
+            <tr>
+                <td id="stuapp"></td> <!-- where the list of student applications will start -->
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

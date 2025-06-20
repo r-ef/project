@@ -30,12 +30,6 @@ float: right;
 /* this is making the supposed bullet points appear in one line for the navigation panel as well, but these items will appear from the right. done it so that 
 the sign in buttons are easier to find */
 
-#stulog {
-border-right: 1.5px solid darkslategrey;
-}
-
-/*making a little line between the student sign in option and the employee on */
-
 li a {
 display: block;
 align-items: center;
@@ -58,7 +52,7 @@ text-decoration: none;
 
 /* dark version of navigation bar design */
 
-#navtext, #stulog {
+#navtext {
   padding-top: 30px;
 }
 
@@ -166,3 +160,39 @@ dark version for company side */
 }
 
 /* styling the input type boxes, dark version for company side*/
+
+.ligappform {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 900px;
+  margin: 50px auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+/* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
+light version for students. this is also a larger version*/
+
+.darappform {
+  background-color: #3b3b3b;
+  padding: 30px;
+  border-radius: 10px;
+  width: 900px;
+  margin: 50px auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
+dark version for company side, also a larger version */
+
+.smallbutn {
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: lightseagreen;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* styling the SMALLER buttons, same style for both sides*/
+
