@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Edit Internship | Internly</title>
+  <title>edit internship | internly</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="darbody">
@@ -8,10 +8,10 @@
   <!-- Navigation Bar -->
   <ul id="darnavbar">
     <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
-    <li class="dir" id="navtext"><a href="companyhome.html" target="_self">Home</a></li>
-    <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">Manage Internships</a></li>
-    <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">Manage Applications</a></li>
-    <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+    <li class="dir" id="navtext"><a href="companyhome.html" target="_self">home</a></li>
+    <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">manage internships</a></li>
+    <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">manage applications</a></li>
+    <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
     <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
   </ul>
 
@@ -19,50 +19,50 @@
   <form class="darform" id="editInternshipForm">
     <table class="signtab" border="0">
       <tr>
-        <td colspan="2" align="center"><h3>Edit Internship</h3></td>
+        <td colspan="2" align="center"><h3>edit internship</h3></td>
       </tr>
       <tr>
-        <td>Title:</td>
+        <td>title:</td>
         <td><input type="text" class="darinput" name="title" id="title" required></td>
       </tr>
       <tr>
-        <td>Type:</td>
+        <td>type:</td>
         <td>
           <select name="type" class="darinput" id="type" required>
-            <option value="">Select Type</option>
-            <option value="Remote">Remote</option>
-            <option value="On-site">On-site</option>
+            <option value="">select type</option>
+            <option value="Remote">remote</option>
+            <option value="On-site">on-site</option>
           </select>
         </td>
       </tr>
       <tr>
-        <td>Skills Required:</td>
+        <td>skills required:</td>
         <td><input type="text" class="darinput" name="skills" id="skills" required></td>
       </tr>
       <tr>
-        <td>Salary (AED):</td>
+        <td>salary (aed):</td>
         <td><input type="number" class="darinput" name="salary" id="salary" min="1000" required></td>
       </tr>
       <tr>
-        <td>Start Date:</td>
+        <td>start date:</td>
         <td><input type="date" class="darinput" name="start_date" id="start_date" required></td>
       </tr>
       <tr>
-        <td>End Date:</td>
+        <td>end date:</td>
         <td><input type="date" class="darinput" name="end_date" id="end_date" required></td>
       </tr>
       <tr>
-        <td>Application Deadline:</td>
+        <td>application deadline:</td>
         <td><input type="date" class="darinput" name="deadline" id="deadline" required></td>
       </tr>
       <tr>
-        <td>Description:</td>
+        <td>description:</td>
         <td><textarea class="darinput" name="description" id="description" rows="3" required></textarea></td>
       </tr>
       <tr>
         <td colspan="2" align="center">
-          <button type="submit" class="butn">Update Internship</button>
-          <button type="button" class="butn" onclick="window.location.href='manageinternships.html'" style="background-color: #6c757d; margin-left: 10px;">Cancel</button>
+          <button type="submit" class="butn">update internship</button>
+          <button type="button" class="butn" onclick="window.location.href='manageinternships.html'" style="background-color: #6c757d; margin-left: 10px;">cancel</button>
         </td>
       </tr>
     </table>
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     internshipId = urlParams.get('id');
     
     if (!internshipId) {
-        alert('No internship ID provided');
+        alert('no internship id provided');
         window.location.href = 'manageinternships.html';
         return;
     }
@@ -95,20 +95,20 @@ async function loadInternshipData() {
         });
 
         if (response.status === 401) {
-            alert('Please sign in to edit internships');
+            alert('please sign in to edit internships');
             window.location.href = 'companysignin.html';
             return;
         }
 
         if (!response.ok) {
-            throw new Error('Failed to load internship data');
+            throw new Error('failed to load internship data');
         }
 
         const internship = await response.json();
         populateForm(internship);
     } catch (error) {
-        console.error('Error loading internship data:', error);
-        alert('Error loading internship data');
+        console.error('error loading internship data:', error);
+        alert('error loading internship data');
         window.location.href = 'manageinternships.html';
     }
 }
@@ -150,15 +150,15 @@ document.getElementById('editInternshipForm').addEventListener('submit', async f
         });
 
         if (response.ok) {
-            alert('Internship updated successfully!');
+            alert('internship updated successfully!');
             window.location.href = 'manageinternships.html';
         } else {
             const errorData = await response.json();
-            alert('Failed to update internship: ' + (errorData.error || 'Unknown error'));
+            alert('failed to update internship: ' + (errorData.error || 'unknown error'));
         }
     } catch (error) {
-        console.error('Error updating internship:', error);
-        alert('Error updating internship');
+        console.error('error updating internship:', error);
+        alert('error updating internship');
     }
 });
 
@@ -174,12 +174,12 @@ document.querySelector('a[href="home.html"]').addEventListener('click', async fu
         });
         
         if (response.ok) {
-            console.log('Logged out successfully');
+            console.log('logged out successfully');
         } else {
-            console.error('Logout failed');
+            console.error('logout failed');
         }
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('logout error:', error);
     }
     
     window.location.href = 'home.html';

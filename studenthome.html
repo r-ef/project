@@ -1,24 +1,23 @@
 <html>
     <head>
-        <title>Student Homepage | Internly</title>
+        <title>student homepage | internly</title>
         <link rel="stylesheet" href="style.css">
     </head>
-    <body class="ligbody"> <!--class for light appearance style-->
+    <body class="ligbody">
 
         <ul id="navbar">
             <li class="dir" id="logo"><a href="studenthome.html" target="_self"> <img src="website logo.png" height="50" width="auto" /></a> </li>
-            <li class="dir" id="navtext"><a href="studenthome.html" target="_self">Home</a></li>
-            <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">Internships</a></li>
-            <li class="dir" id="navtext"><a href="studentapply.html" target="_self">Apply</a></li>
-            <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">Current Applications</a></li>
-            <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+            <li class="dir" id="navtext"><a href="studenthome.html" target="_self">home</a></li>
+            <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">internships</a></li>
+            <li class="dir" id="navtext"><a href="studentapply.html" target="_self">apply</a></li>
+            <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">current applications</a></li>
+            <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
             <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
         </ul>
-        <!--creating the navigation bar at the top of the page, both the logo and home button takes them to the same page. the log out and account buttons are to the
-        right to make it easier to find them -->
+        
         <div class="ligbox">
-        <h2 class="homep" id="welcomeMessage">Welcome back, [Student Name]!</h2>
-        <p class="homep">You have x applications in progress and x new internships have been posted.</p>
+        <h2 class="homep" id="welcomeMessage">welcome back, [student name]!</h2>
+        <p class="homep">you have x applications in progress and x new internships have been posted.</p>
         </div>
 
 <script>
@@ -43,17 +42,17 @@ async function loadStudentProfile() {
         }
 
         if (!response.ok) {
-            throw new Error(`Failed to load profile: ${response.status}`);
+            throw new Error(`failed to load profile: ${response.status}`);
         }
 
         const student = await response.json();
         
         const welcomeMessage = document.getElementById('welcomeMessage');
         const fullName = `${student.fname || ''} ${student.lname || ''}`.trim();
-        welcomeMessage.textContent = `Welcome back, ${fullName || 'Student'}!`;
+        welcomeMessage.textContent = `welcome back, ${fullName || 'student'}!`;
 
     } catch (error) {
-        console.error('Error loading student profile:', error);
+        console.error('error loading student profile:', error);
     }
 }
 
@@ -69,12 +68,12 @@ document.querySelector('a[href="home.html"]').addEventListener('click', async fu
         });
         
         if (response.ok) {
-            console.log('Logged out successfully');
+            console.log('logged out successfully');
         } else {
-            console.error('Logout failed');
+            console.error('logout failed');
         }
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('logout error:', error);
     }
     
     window.location.href = 'home.html';

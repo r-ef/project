@@ -1,22 +1,22 @@
 <html>
     <head>
-        <title>Company Homepage | Internly</title>
+        <title>company homepage | internly</title>
         <link rel="stylesheet" href="style.css">
     </head>
-    <body class="darbody"> <!--class for dark appearance style-->
+    <body class="darbody">
 
         <ul id="darnavbar">
             <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
-            <li class="dir" id="navtext"><a href="companyhome.html" target="_self">Home</a></li>
-            <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">Manage Internships</a></li>
-            <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">Manage Applications</a></li>
-            <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+            <li class="dir" id="navtext"><a href="companyhome.html" target="_self">home</a></li>
+            <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">manage internships</a></li>
+            <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">manage applications</a></li>
+            <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
             <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
         </ul>
         
         <div class="darbox">
-        <h2 class="homep" id="welcomeMessage">Welcome back, [Company Name]!</h2>
-        <p class="homep">You have x internship postings and x applications pending for approval.</p>
+        <h2 class="homep" id="welcomeMessage">welcome back, [company name]!</h2>
+        <p class="homep">you have x internship postings and x applications pending for approval.</p>
         </div>
 
 <script>
@@ -41,16 +41,16 @@ async function loadCompanyProfile() {
         }
 
         if (!response.ok) {
-            throw new Error(`Failed to load profile: ${response.status}`);
+            throw new Error(`failed to load profile: ${response.status}`);
         }
 
         const company = await response.json();
         
         const welcomeMessage = document.getElementById('welcomeMessage');
-        welcomeMessage.textContent = `Welcome back, ${company.name || 'Company'}!`;
+        welcomeMessage.textContent = `welcome back, ${company.name || 'company'}!`;
 
     } catch (error) {
-        console.error('Error loading company profile:', error);
+        console.error('error loading company profile:', error);
     }
 }
 
@@ -66,12 +66,12 @@ document.querySelector('a[href="home.html"]').addEventListener('click', async fu
         });
         
         if (response.ok) {
-            console.log('Logged out successfully');
+            console.log('logged out successfully');
         } else {
-            console.error('Logout failed');
+            console.error('logout failed');
         }
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('logout error:', error);
     }
     
     window.location.href = 'home.html';

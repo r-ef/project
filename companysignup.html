@@ -1,65 +1,59 @@
 <html>
     <head>
-        <title>Company Sign Up | Internly </title>
-
+        <title>company sign up | internly</title>
         <link rel="stylesheet" href="style.css">
-        <!-- linking the css file to this page -->
     </head>
-    <body class="darbody"> <!--class for dark appearance style-->
-        <img src="website admin logo.png" height="60" width="234" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
-        <!-- above, i put in the image for the website's logo, admin version, and also centered it with inline css-->
+    <body class="darbody">
+        <img src="website admin logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
 
-        <form class="darform" id="companySignupForm"> <!-- removed action, added id -->
-            <table class="signtab" border="0"> <!-- adding a class to the table tag so that i may style it easily in the css file-->
+        <form class="darform" id="companySignupForm">
+            <table class="signtab" border="0">
                 <tr>
-                    <td colspan="2" align="center"><h3>Sign Up</h3></td>
+                    <td colspan="2" align="center"><h3>sign up</h3></td>
                 </tr>
                 <tr>
-                    <td>Company <br /> Name:</td>
+                    <td>company name:</td>
                     <td><input type="text" class="darinput" name="com_name" size="30" required></td>
                 </tr>
-                 <tr>
-                    <td>Company Location:</td>
-                    <td><input type="text" class="darinput" name="com_loc" size="30" required></td>
-                 </tr>
                 <tr>
-                    <td>Company <br /> E-mail:</td>
-                    <td><input type="email" class="darinput" name="stu_email" size="30" required></td>
+                    <td>location:</td>
+                    <td><input type="text" class="darinput" name="com_location" size="30" required></td>
                 </tr>
                 <tr>
-                    <td>Password:</td>
-                    <td><input type="password" class="darinput" name="stud_pass" size="30" required></td>
+                    <td>email:</td>
+                    <td><input type="email" class="darinput" name="com_email" size="30" required></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" class="butn" value="Sign up"></td>
+                    <td>password:</td>
+                    <td><input type="password" class="darinput" name="com_pass" size="30" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" class="butn" value="sign up"></td>
                 </tr>
             </table>
-            <!--a table created where the user will have to fill out the necessary details to sign up for the website. done by using input types.-->
-
         </form>
-
-        <script>
-        document.getElementById('companySignupForm').addEventListener('submit', async function(event) {
-          event.preventDefault();
-          const name = document.querySelector('input[name="com_name"]').value;
-          const location = document.querySelector('input[name="com_loc"]').value;
-          const email = document.querySelector('input[name="stu_email"]').value;
-          const password = document.querySelector('input[name="stud_pass"]').value;
-          const payload = { name, location, email, password };
-          const response = await fetch('http://localhost:3000/companysignup', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          if (response.ok) {
-            alert('Sign up successful');
-            window.location.href = 'companysignin.html';
-          } else {
-            alert('Sign up failed');
-          }
-        });
-        </script>
-
     </body>
+    <script>
+    document.getElementById('companySignupForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const name = document.querySelector('input[name="com_name"]').value;
+        const location = document.querySelector('input[name="com_location"]').value;
+        const email = document.querySelector('input[name="com_email"]').value;
+        const password = document.querySelector('input[name="com_pass"]').value;
+        if (email && password) {
+            const response = await fetch('http://localhost:3000/companysignup', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, location, email, password })
+            });
+            if (response.ok) {
+                alert('sign up successful');
+                window.location.href = 'companyhome.html';
+            } else {
+                alert('sign up failed');
+            }
+        }
+    });
+    </script>
 </html>

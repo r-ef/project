@@ -359,7 +359,7 @@ app.put('/internships/:id', (req, res) => {
     (err, result) => {
       if (err) return res.status(500).json({ error: 'db error' });
       if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Internship not found or not authorized' });
+        return res.status(404).json({ error: 'internship not found or not authorized' });
       }
       res.json({ message: 'Internship updated successfully' });
     }
@@ -367,7 +367,7 @@ app.put('/internships/:id', (req, res) => {
 });
 
 app.delete('/internships/:id', (req, res) => {
-  if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
+  if (!req.session.companyId) return res.status(401).json({ error: 'not authenticated' });
   const internshipId = req.params.id;
   
   connection.query(
@@ -376,7 +376,7 @@ app.delete('/internships/:id', (req, res) => {
     (err, result) => {
       if (err) return res.status(500).json({ error: 'db error' });
       if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Internship not found or not authorized' });
+        return res.status(404).json({ error: 'internship not found or not authorized' });
       }
       res.json({ message: 'Internship deleted successfully' });
     }
@@ -384,7 +384,7 @@ app.delete('/internships/:id', (req, res) => {
 });
 
 app.get('/internships/:id', (req, res) => {
-  if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
+  if (!req.session.companyId) return res.status(401).json({ error: 'not authenticated' });
   const internshipId = req.params.id;
   
   connection.query(
@@ -393,7 +393,7 @@ app.get('/internships/:id', (req, res) => {
     (err, results) => {
       if (err) return res.status(500).json({ error: 'db error' });
       if (results.length === 0) {
-        return res.status(404).json({ error: 'Internship not found or not authorized' });
+        return res.status(404).json({ error: 'internship not found or not authorized' });
       }
       res.json(results[0]);
     }
@@ -403,10 +403,10 @@ app.get('/internships/:id', (req, res) => {
 app.post('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({ error: 'Could not log out' });
+      return res.status(500).json({ error: 'could not log out' });
     }
     res.clearCookie('connect.sid');
-    res.json({ message: 'Logged out successfully' });
+    res.json({ message: 'logged out successfully' });
   });
 });
 

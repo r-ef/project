@@ -1,66 +1,62 @@
 <html>
     <head>
-        <title>Company Sign in | Internly </title>
-
+        <title>company sign in | internly</title>
         <link rel="stylesheet" href="style.css">
-        <!-- linking the css file to this page -->
-
     </head>
-    <body class="darbody"> <!--class for dark appearance style-->
-        <img src="website admin logo.png" height="60" width="234" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
-        <!-- above, i put in the image for the website's logo, admin version, and also centered it with inline css-->
+    <body class="darbody">
+        <img src="website admin logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
 
-        <form class="darform" id="companySigninForm"> <!-- removed action, added id -->
-            <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
+        <form class="darform" id="companySigninForm">
+            <table class="signtab" border="0">
                 <tr>
-                    <td colspan="2" align="center"><h3>Sign in</h3></td>
+                    <td colspan="2" align="center"><h3>sign in</h3></td>
                 </tr>
                 <tr>
-                    <td>E-mail:</td>
+                    <td>email:</td>
                     <td><input type="email" class="darinput" name="com_email" size="30" required></td>
                 </tr>
                 <tr>
-                    <td>Password:</td>
+                    <td>password:</td>
                     <td><input type="password" class="darinput" name="com_pass" size="30" required></td>
                 </tr>
-                <tr>
-                    <td colspan="2"><input type="submit" class="butn" value="Sign in"></td>
+                <tr>    
+                    <td colspan="2"><input type="submit" class="butn" value="sign in"></td>
                 </tr>
             </table>
         </form>
-        <script>
-        document.getElementById('companySigninForm').addEventListener('submit', async function(event) {
-          event.preventDefault();
-          const email = document.querySelector('input[name="com_email"]').value;
-          const password = document.querySelector('input[name="com_pass"]').value;
-          const payload = { email, password };
-          const response = await fetch('http://localhost:3000/companysignin', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          if (response.ok) {
-            alert('Sign in successful');
-            window.location.href = 'companyaccount.html';
-          } else {
-            alert('Sign in failed');
-          }
-        });
-        </script>
-        <!-- users are asked to sign in using their emails and passwords, done using input type email and password-->
 
         <form class="darform">
             <table class="signtab" border="0">
                 <tr> 
-                    <td><h3>Don't have an account? <br />
-                    Sign up now!</h3></td>
+                    <td><h3>don't have an account? <br />
+                    sign up now!</h3></td>
                 </tr>
                 <tr>
-                    <td><a href="companysignup.html"><button type="button" class="butn">Sign up</button></a></td>
+                    <td><a href="companysignup.html"><button type="button" class="butn">sign up</button></a></td>
                 </tr>
             </table>
-            <!--this is the section where the user may sign up if they haven't already, the button will bring them to the sign up page-->
         </form>
     </body>
+
+    <script>
+    document.getElementById('companySigninForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.querySelector('input[name="com_email"]').value;
+        const password = document.querySelector('input[name="com_pass"]').value;
+        if (email && password) {
+            const response = await fetch('http://localhost:3000/companysignin', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            if (response.ok) {
+                alert('sign in successful');
+                window.location.href = 'companyhome.html';
+            } else {
+                alert('sign in failed');
+            }
+        }
+    });
+    </script>
 </html>
