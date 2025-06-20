@@ -196,3 +196,49 @@ dark version for company side, also a larger version */
 
 /* styling the SMALLER buttons, same style for both sides*/
 
+.ligappformbig {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 1500px;
+  margin: 50px auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
+light version for students. this is also an even bigger version*/
+
+.darappformbig {
+  background-color: #3b3b3b;
+  padding: 30px;
+  border-radius: 10px;
+  width: 1800px;
+  margin: 50px auto; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
+dark version for company side. this is also an even bigger version*/
+
+.ligformmid {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 800px;
+  margin: 50px 20px 20px 890px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* this is styling the form so that it has a different background color to the actual background of the whole page, making the corners round and sizing it. 
+dark version for students. this is a slightly bigger version than original version*/
+
+.homep {
+  text-align: center;
+}
+
+/* this is aligning the text on the home page to the center. */
+
+#homeb {
+  display: block;
+  margin: 10px auto;
+}

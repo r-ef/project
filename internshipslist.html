@@ -1,0 +1,71 @@
+<html>
+<head>
+  <title>Internships | Internly</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="internshipsearch.js" defer></script>
+</head>
+<body class="ligbody">
+
+  <!-- Navigation Bar to go throught the other pages -->
+  <ul id="navbar">
+    <li class="dir" id="logo"><a href="studenthome.html" target="_self"><img src="website logo.png" height="50" width="auto" /></a></li>
+    <li class="dir" id="navtext"><a href="studenthome.html" target="_self">Home</a></li>
+    <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">Internships</a></li>
+    <li class="dir" id="navtext"><a href="studentapply.html" target="_self">Apply</a></li>
+    <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">Current Applications</a></li>
+    <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+    <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto" /></a></li>
+  </ul>
+
+<form class="ligformmid" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
+    <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
+        <tr>
+            <th colspan="5" align="center"><h4>Filter options</h4></th>
+        </tr>
+        <tr>
+            <td align="center">Company</td>
+            <td align="center">Internship Type</td>
+            <td align="center">Location</td>
+            <td align="center">Salary</td>
+        </tr>
+        <tr>
+            <td id="compdrop" align="right"></td> <!--create a company list drop down here-->
+            <td align="center"><select name="seartype" class="liginput">
+                <option value="" disabled selected hidden>Select...</option> <!-- disabled stops the user from being able to select, selected makes it the default option, and hidden selects it from the list when it drops down. this is for appearance-->
+                <option value="searrem">Remote</option>
+                <option value="searons">On-site</option>
+            </select></td>
+            <td align="center"><select name="searloc" class="liginput">
+                <option value="" disabled selected hidden>Select...</option>
+                <option value=""></option><!-- list of available locations-->
+            </select></td>
+            <td align="center"><input type="range" min="1000" max="8000" step="1000" value="1000" onchange="getSalary(this.value)" id="searsal"><span id="number">1000+ AED</span>
+                <!--i created a range bar for the students to adjust it based on how much they want their salary to be, i also called a function which will display the value of said range next to it so the student knows what they have chosen-->
+            </select></td>
+            <td align="left"><input type="submit" class="smallbutn" value="Search"></td>
+        </tr>
+    </table>
+  </form>
+
+  <form class="ligappformbig" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
+    <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
+        <tr>
+            <th colspan="8" align="center"><h1>Available Internships</h1></th>
+        </tr>
+        <tr>
+          <th align="center">Company</th>
+          <th align="center">Internship <br /> Title</th>
+          <th align="center">Internship <br /> Type</th>
+          <th align="center">Skills Required</th>
+          <th align="center">Salary</th>
+          <th align="center">Duration</th>
+          <th align="center">Application <br /> Deadline</th>
+          <th align="center">Intership Details</th>
+        </tr>
+        <tr>
+            <td id="listint"></td><!--where the list of internships begin-->
+        </tr>
+    </table>
+  </form>
+</body>
+</html>

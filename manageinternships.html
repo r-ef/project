@@ -1,0 +1,47 @@
+<html>
+<head>
+  <title>Internships | Internly</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="darbody">
+
+  <!-- Navigation Bar to go throught the other pages -->
+    <ul id="darnavbar">
+        <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
+        <li class="dir" id="navtext"><a href="companyhome.html" target="_self">Home</a></li>
+        <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">Manage Internships</a></li>
+        <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">Manage Applications</a></li>
+        <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+        <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
+    </ul>
+
+  <form class="darappformbig" action="GET"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
+    <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
+        <tr>
+            <th colspan="9" align="center"><h1>Available Internships</h1></th>
+        </tr>
+        <tr>
+          <th align="center">Internship <br /> Title</th>
+          <th align="center">Internship <br /> Type</th>
+          <th align="center">Skill Required</th>
+          <th align="center">Salary</th>
+          <th align="center">Duration</th>
+          <th align="center">Application <br /> Deadline</th>
+          <th align="center">Intership Details</th>
+          <th align="center"></th>
+        </tr>
+        <tr>
+            <td id="comintern"></td><!--where the list of internships begin-->
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><a href="internshipedit.html" target="_self"><button type="button" class="smallbutn">Edit</button></a></td>
+        </tr>
+    </table>
+  </form>
+</body>
+</html>
