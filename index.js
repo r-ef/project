@@ -98,6 +98,7 @@ app.post("/studentsignup", async (req, res) => {
           [firstname, lastname, dob, gender, email, hashedPassword],
           function (err, result) {
             if (err) return res.status(500).json({ error: 'db error' });
+            req.session.studentId = result.insertId;
             res.status(201).json({ message: 'student registered' });
           }
         );

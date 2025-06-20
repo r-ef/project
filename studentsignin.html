@@ -52,12 +52,13 @@
         if (email && password) {
             const response = await fetch('http://localhost:3000/studentsignin', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
             if (response.ok) {
                 alert('sign in successful');
-                window.location.href = 'studentdashboard.html';
+                window.location.href = 'studenthome.html';
             } else {
                 alert('sign in failed');
             }
