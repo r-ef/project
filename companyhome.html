@@ -17,9 +17,74 @@
         right to make it easier to find them -->
 
         <div class="darbox">
-        <h2 class="homep">Welcome back, [Company Name]!</h2>
+        <h2 class="homep" id="welcomeMessage">Welcome back, [Company Name]!</h2>
         <p class="homep">You have x internship postings and x applications pending for approval.</p>
-        </form>
         </div>
+
+<script>
+// Load company profile on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadCompanyProfile();
+});
+
+// Fetch and display company profile
+async function loadCompanyProfile() {
+    try {
+        const response = await fetch('http://localhost:3000/company/profile', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            // Not authenticated, redirect to login
+            window.location.href = 'companysignin.html';
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Failed to load profile: ${response.status}`);
+        }
+
+        const company = await response.json();
+        
+        // Update welcome message with company name
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        welcomeMessage.textContent = `Welcome back, ${company.name || 'Company'}!`;
+
+    } catch (error) {
+        console.error('Error loading company profile:', error);
+        // Keep default message if there's an error
+    }
+}
+
+// Add logout functionality
+document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
+    event.preventDefault();
+    try {
+        const response = await fetch('http://localhost:3000/company/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            console.log('Logged out successfully');
+        } else {
+            console.error('Logout failed');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+    
+    // Redirect to home page
+    window.location.href = 'home.html';
+});
+</script>
     </body>
 </html>

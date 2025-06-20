@@ -22,19 +22,15 @@
             </tr>
             <tr>
                 <td>Company Name:</td>
-                <td id="comname"></td>
+                <td id="comname">Loading...</td>
             </tr>
             <tr>
                 <td>Company Location:</td>
-                <td id="comloc"></td>
+                <td id="comloc">Loading...</td>
             </tr>
             <tr>
                 <td>Company E-mail:</td>
-                <td id="comemail"></td>
-            </tr>
-            <tr>
-                <td>Account Password:</td>
-                <td id="comass"></td>
+                <td id="comemail">Loading...</td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -43,5 +39,82 @@
             </tr>
         </table>
     </form>
+
+<script>
+// Load company profile on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadCompanyProfile();
+});
+
+// Fetch and display company profile
+async function loadCompanyProfile() {
+    try {
+        console.log('Loading company profile...');
+        const response = await fetch('http://localhost:3000/company/profile', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+
+        if (response.status === 401) {
+            // Not authenticated, redirect to login
+            alert('Please sign in to view your profile');
+            window.location.href = 'companysignin.html';
+            return;
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Response error:', errorText);
+            throw new Error(`Failed to load profile: ${response.status}`);
+        }
+
+        const company = await response.json();
+        console.log('Company data:', company);
+        
+        // Populate the table with company data
+        document.getElementById('comname').textContent = company.name || 'N/A';
+        document.getElementById('comloc').textContent = company.location || 'N/A';
+        document.getElementById('comemail').textContent = company.email || 'N/A';
+
+    } catch (error) {
+        console.error('Error loading company profile:', error);
+        document.getElementById('comname').textContent = 'Error loading data';
+        document.getElementById('comloc').textContent = 'Error loading data';
+        document.getElementById('comemail').textContent = 'Error loading data';
+    }
+}
+
+// Add logout functionality
+document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
+    event.preventDefault();
+    try {
+        const response = await fetch('http://localhost:3000/company/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            console.log('Logged out successfully');
+        } else {
+            console.error('Logout failed');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+    
+    // Redirect to home page
+    window.location.href = 'home.html';
+});
+</script>
 </body>
 </html>

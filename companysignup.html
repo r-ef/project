@@ -48,6 +48,7 @@
           const payload = { name, location, email, password };
           const response = await fetch('http://localhost:3000/companysignup', {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });

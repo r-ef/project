@@ -15,7 +15,7 @@
     <li class="log" id="navtext"><a href="studentsignin.html" target="_self">Sign in</a> </li>
   </ul>
 
-<form class="ligformmid" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
+<form class="ligformmid"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
     <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
         <tr>
             <th colspan="5" align="center"><h4>Filter options</h4></th>
@@ -29,9 +29,9 @@
         <tr>
             <td id="compdrop" align="right"></td> <!--create a company list drop down here-->
             <td align="center"><select name="seartype" class="liginput">
-                <option value="" disabled selected hidden>Select...</option> <!-- disabled stops the user from being able to select, selected makes it the default option, and hidden selects it from the list when it drops down. this is for appearance-->
-                <option value="searrem">Remote</option>
-                <option value="searons">On-site</option>
+                <option value="" disabled selected hidden>Select...</option>
+                <option value="Remote">Remote</option>
+                <option value="On-site">On-site</option>
             </select></td>
             <td align="center"><select name="searloc" class="liginput">
                 <option value="" disabled selected hidden>Select...</option>
@@ -58,12 +58,113 @@
           <th align="center">Salary</th>
           <th align="center">Duration</th>
           <th align="center">Application <br /> Deadline</th>
-          <th align="center">Intership Details</th>
+          <th align="center">Internship Details</th>
         </tr>
-        <tr>
-            <td id="listint"></td><!--where the list of internships begin-->
-        </tr>
+        <tbody id="internshipsTableBody">
+          <!-- Internships will be inserted here -->
+        </tbody>
     </table>
   </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  loadInternships();
+  loadCompanies();
+  loadLocations();
+});
+
+async function loadInternships(filters = {}) {
+  try {
+    const queryParams = new URLSearchParams(filters);
+    const url = filters.company || filters.type || filters.location || filters.salary 
+      ? `http://localhost:3000/internships/filter?${queryParams}` 
+      : 'http://localhost:3000/internships';
+    
+    const response = await fetch(url);
+    const internships = await response.json();
+    console.log(internships);
+    displayInternships(internships);
+  } catch (error) {
+    console.error('Error loading internships:', error);
+  }
+}
+
+function displayInternships(internships) {
+  const container = document.getElementById('internshipsTableBody');
+  if (internships.length === 0) {
+    container.innerHTML = '<tr><td colspan="8" align="center">No internships found</td></tr>';
+    return;
+  }
+  
+  const html = internships.map(internship => `
+    <tr>
+      <td align="center">${internship.company_name || 'N/A'}</td>
+      <td align="center">${internship.title || 'N/A'}</td>
+      <td align="center">${internship.type || 'N/A'}</td>
+      <td align="center">${internship.skills || 'N/A'}</td>
+      <td align="center">${internship.salary ? internship.salary + ' AED' : 'N/A'}</td>
+      <td align="center">${formatDate(internship.start_date)} - ${formatDate(internship.end_date)}</td>
+      <td align="center">${formatDate(internship.deadline)}</td>
+      <td align="center">${internship.description || 'N/A'}</td>
+    </tr>
+  `).join('');
+  
+  container.innerHTML = html;
+}
+
+async function loadCompanies() {
+  try {
+    const response = await fetch('http://localhost:3000/companies');
+    const companies = await response.json();
+    const dropdown = document.getElementById('compdrop');
+    dropdown.innerHTML = `
+      <select name="searcomp" class="liginput">
+        <option value="" disabled selected hidden>Select...</option>
+        ${companies.map(company => `<option value="${company}">${company}</option>`).join('')}
+      </select>
+    `;
+  } catch (error) {
+    console.error('Error loading companies:', error);
+  }
+}
+
+async function loadLocations() {
+  try {
+    const response = await fetch('http://localhost:3000/locations');
+    const locations = await response.json();
+    const dropdown = document.querySelector('select[name="searloc"]');
+    dropdown.innerHTML = `
+      <option value="" disabled selected hidden>Select...</option>
+      ${locations.map(location => `<option value="${location}">${location}</option>`).join('')}
+    `;
+  } catch (error) {
+    console.error('Error loading locations:', error);
+  }
+}
+
+document.querySelector('.ligformmid').addEventListener('submit', function(event) {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const filters = {
+    company: formData.get('searcomp'),
+    type: formData.get('seartype'),
+    location: formData.get('searloc'),
+    salary: document.getElementById('searsal').value
+  };
+  
+  Object.keys(filters).forEach(key => {
+    if (!filters[key] || filters[key] === '') {
+      delete filters[key];
+    }
+  });
+  
+  loadInternships(filters);
+});
+
+function formatDate(dateString) {
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleDateString();
+}
+</script>
 </body>
 </html>

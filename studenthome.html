@@ -17,9 +17,75 @@
         <!--creating the navigation bar at the top of the page, both the logo and home button takes them to the same page. the log out and account buttons are to the
         right to make it easier to find them -->
         <div class="ligbox">
-        <h2 class="homep">Welcome back, [Student Name]!</h2>
+        <h2 class="homep" id="welcomeMessage">Welcome back, [Student Name]!</h2>
         <p class="homep">You have x applications in progress and x new internships have been posted.</p>
-        </form>
         </div>
+
+<script>
+// Load student profile on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadStudentProfile();
+});
+
+// Fetch and display student profile
+async function loadStudentProfile() {
+    try {
+        const response = await fetch('http://localhost:3000/student/profile', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            // Not authenticated, redirect to login
+            window.location.href = 'studentsignin.html';
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Failed to load profile: ${response.status}`);
+        }
+
+        const student = await response.json();
+        
+        // Update welcome message with student name
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const fullName = `${student.fname || ''} ${student.lname || ''}`.trim();
+        welcomeMessage.textContent = `Welcome back, ${fullName || 'Student'}!`;
+
+    } catch (error) {
+        console.error('Error loading student profile:', error);
+        // Keep default message if there's an error
+    }
+}
+
+// Add logout functionality
+document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
+    event.preventDefault();
+    try {
+        const response = await fetch('http://localhost:3000/student/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            console.log('Logged out successfully');
+        } else {
+            console.error('Logout failed');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+    
+    // Redirect to home page
+    window.location.href = 'home.html';
+});
+</script>
     </body>
 </html>
