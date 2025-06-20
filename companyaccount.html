@@ -63,7 +63,6 @@ async function loadCompanyProfile() {
         console.log('Response headers:', response.headers);
 
         if (response.status === 401) {
-            // Not authenticated, redirect to login
             alert('Please sign in to view your profile');
             window.location.href = 'companysignin.html';
             return;
@@ -78,7 +77,6 @@ async function loadCompanyProfile() {
         const company = await response.json();
         console.log('Company data:', company);
         
-        // Populate the table with company data
         document.getElementById('comname').textContent = company.name || 'N/A';
         document.getElementById('comloc').textContent = company.location || 'N/A';
         document.getElementById('comemail').textContent = company.email || 'N/A';
@@ -91,7 +89,6 @@ async function loadCompanyProfile() {
     }
 }
 
-// Add logout functionality
 document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
     event.preventDefault();
     try {
@@ -112,7 +109,6 @@ document.querySelector('a[href="home.html"]').addEventListener('click', async fu
         console.error('Logout error:', error);
     }
     
-    // Redirect to home page
     window.location.href = 'home.html';
 });
 </script>

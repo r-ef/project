@@ -1,0 +1,195 @@
+<html>
+<head>
+  <title>Edit Internship | Internly</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="darbody">
+
+  <!-- Navigation Bar -->
+  <ul id="darnavbar">
+    <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
+    <li class="dir" id="navtext"><a href="companyhome.html" target="_self">Home</a></li>
+    <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">Manage Internships</a></li>
+    <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">Manage Applications</a></li>
+    <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+    <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
+  </ul>
+
+  <!-- Edit Internship Form -->
+  <form class="darform" id="editInternshipForm">
+    <table class="signtab" border="0">
+      <tr>
+        <td colspan="2" align="center"><h3>Edit Internship</h3></td>
+      </tr>
+      <tr>
+        <td>Title:</td>
+        <td><input type="text" class="darinput" name="title" id="title" required></td>
+      </tr>
+      <tr>
+        <td>Type:</td>
+        <td>
+          <select name="type" class="darinput" id="type" required>
+            <option value="">Select Type</option>
+            <option value="Remote">Remote</option>
+            <option value="On-site">On-site</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Skills Required:</td>
+        <td><input type="text" class="darinput" name="skills" id="skills" required></td>
+      </tr>
+      <tr>
+        <td>Salary (AED):</td>
+        <td><input type="number" class="darinput" name="salary" id="salary" min="1000" required></td>
+      </tr>
+      <tr>
+        <td>Start Date:</td>
+        <td><input type="date" class="darinput" name="start_date" id="start_date" required></td>
+      </tr>
+      <tr>
+        <td>End Date:</td>
+        <td><input type="date" class="darinput" name="end_date" id="end_date" required></td>
+      </tr>
+      <tr>
+        <td>Application Deadline:</td>
+        <td><input type="date" class="darinput" name="deadline" id="deadline" required></td>
+      </tr>
+      <tr>
+        <td>Description:</td>
+        <td><textarea class="darinput" name="description" id="description" rows="3" required></textarea></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          <button type="submit" class="butn">Update Internship</button>
+          <button type="button" class="butn" onclick="window.location.href='manageinternships.html'" style="background-color: #6c757d; margin-left: 10px;">Cancel</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+<script>
+let internshipId = null;
+
+// Load internship data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Get internship ID from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    internshipId = urlParams.get('id');
+    
+    if (!internshipId) {
+        alert('No internship ID provided');
+        window.location.href = 'manageinternships.html';
+        return;
+    }
+    
+    loadInternshipData();
+});
+
+// Load internship data for editing
+async function loadInternshipData() {
+    try {
+        const response = await fetch(`http://localhost:3000/internships/${internshipId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            alert('Please sign in to edit internships');
+            window.location.href = 'companysignin.html';
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error('Failed to load internship data');
+        }
+
+        const internship = await response.json();
+        populateForm(internship);
+    } catch (error) {
+        console.error('Error loading internship data:', error);
+        alert('Error loading internship data');
+        window.location.href = 'manageinternships.html';
+    }
+}
+
+// Populate form with internship data
+function populateForm(internship) {
+    document.getElementById('title').value = internship.title || '';
+    document.getElementById('type').value = internship.type || '';
+    document.getElementById('skills').value = internship.skills || '';
+    document.getElementById('salary').value = internship.salary || '';
+    document.getElementById('start_date').value = internship.start_date || '';
+    document.getElementById('end_date').value = internship.end_date || '';
+    document.getElementById('deadline').value = internship.deadline || '';
+    document.getElementById('description').value = internship.description || '';
+}
+
+// Handle form submission
+document.getElementById('editInternshipForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const internshipData = {
+        title: formData.get('title'),
+        type: formData.get('type'),
+        skills: formData.get('skills'),
+        salary: parseInt(formData.get('salary')),
+        start_date: formData.get('start_date'),
+        end_date: formData.get('end_date'),
+        deadline: formData.get('deadline'),
+        description: formData.get('description')
+    };
+
+    try {
+        const response = await fetch(`http://localhost:3000/internships/${internshipId}`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(internshipData)
+        });
+
+        if (response.ok) {
+            alert('Internship updated successfully!');
+            window.location.href = 'manageinternships.html';
+        } else {
+            const errorData = await response.json();
+            alert('Failed to update internship: ' + (errorData.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error updating internship:', error);
+        alert('Error updating internship');
+    }
+});
+
+// Add logout functionality
+document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
+    event.preventDefault();
+    try {
+        const response = await fetch('http://localhost:3000/company/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            console.log('Logged out successfully');
+        } else {
+            console.error('Logout failed');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+    
+    window.location.href = 'home.html';
+});
+</script>
+</body>
+</html> 

@@ -40,7 +40,6 @@ async function loadStudentProfile() {
         });
 
         if (response.status === 401) {
-            // Not authenticated, redirect to login
             window.location.href = 'studentsignin.html';
             return;
         }
@@ -83,7 +82,6 @@ document.querySelector('a[href="home.html"]').addEventListener('click', async fu
         console.error('Logout error:', error);
     }
     
-    // Redirect to home page
     window.location.href = 'home.html';
 });
 </script>

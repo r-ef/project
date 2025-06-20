@@ -192,9 +192,7 @@ document.getElementById('createInternshipForm').addEventListener('submit', async
 
 // Edit internship
 function editInternship(id) {
-    // For now, redirect to a simple edit page or show a modal
-    // You can implement a more sophisticated edit interface
-    if (confirm('Edit internship? This will redirect to an edit page.')) {
+    if (confirm('Edit internship?')) {
         window.location.href = `internshipedit.html?id=${id}`;
     }
 }
