@@ -37,7 +37,6 @@ studentTableQuery = "CREATE TABLE IF NOT EXISTS student2 (id INT PRIMARY KEY AUT
 companyTableQuery = "CREATE TABLE IF NOT EXISTS company (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), location VARCHAR(255), email VARCHAR(255), password VARCHAR(255))"
 internshipsTableQuery = "CREATE TABLE IF NOT EXISTS internships (id INT PRIMARY KEY AUTO_INCREMENT, company_id INT, title VARCHAR(255), type VARCHAR(255), skills VARCHAR(255), salary INT, start_date DATE, end_date DATE, deadline DATE, description VARCHAR(255), FOREIGN KEY (company_id) REFERENCES company(id))"
 applicationsTableQuery = "CREATE TABLE IF NOT EXISTS applications2 (id INT PRIMARY KEY, fname VARCHAR(255), lname VARCHAR(255), dob DATE, gender VARCHAR(1), email VARCHAR(255), file_upload BLOB, internship VARCHAR(255))"
-interndatatest = "insert into internships (company_id, title, type, skills, salary, start_date, end_date, deadline, description) values (1, 'Software Developer Intern', 'Remote', 'JavaScript, React, Node.js', 3000, '2024-06-01', '2024-08-31', '2024-05-15', 'Learn full-stack development with modern technologies'), (1, 'Data Analyst Intern', 'On-site', 'Python, SQL, Excel', 2500, '2024-06-01', '2024-08-31', '2024-05-20', 'Analyze business data and create reports'), (2, 'Marketing Intern', 'Remote', 'Social Media, Content Creation', 2000, '2024-07-01', '2024-09-30', '2024-06-15', 'Help with digital marketing campaigns'), (3, 'UI/UX Design Intern', 'On-site', 'Figma, Adobe Creative Suite', 3500, '2024-06-15', '2024-09-15', '2024-06-01', 'Design user interfaces and user experiences'), (4, 'Cybersecurity Intern', 'Remote', 'Network Security, Linux', 4000, '2024-07-01', '2024-10-01', '2024-06-30', 'Learn about cybersecurity and threat detection'), (5, 'AI/ML Intern', 'On-site', 'Python, TensorFlow, Machine Learning', 4500, '2024-08-01', '2024-11-01', '2024-07-15', 'Work on artificial intelligence and machine learning projects');"
 
 
 connection.connect((err) => {
@@ -255,13 +254,18 @@ app.get('/usinternshipslist', (req, res) => {
 });
 
 app.get('/internships', (req, res) => {
+  console.log('internships endpoint called');
   connection.query(
     `SELECT i.*, c.name as company_name, c.location as company_location 
      FROM internships i 
      LEFT JOIN company c ON i.company_id = c.id 
      ORDER BY i.deadline ASC`,
     (err, results) => {
-      if (err) return res.status(500).json({ error: 'db error' });
+      if (err) {
+        console.error('internships query error:', err);
+        return res.status(500).json({ error: 'db error' });
+      }
+      console.log('internships query results:', results.length, 'records found');
       res.json(results);
     }
   );
@@ -432,5 +436,70 @@ app.post('/student/logout', (req, res) => {
 
 app.listen(3000, () => {
     console.log("server started");
-    connection.query(interndatatest);
+    
+    // insert test data if no companies exist
+    connection.query('SELECT COUNT(*) as count FROM company', (err, results) => {
+      if (err) {
+        console.error('error checking company count:', err);
+        return;
+      }
+      
+      if (results[0].count === 0) {
+        console.log('inserting test companies...');
+        const testCompanies = [
+          ['tech solutions inc', 'dubai', 'tech@example.com', 'password123'],
+          ['digital innovations', 'abu dhabi', 'digital@example.com', 'password123'],
+          ['creative agency', 'sharjah', 'creative@example.com', 'password123'],
+          ['cyber security pro', 'ajman', 'cyber@example.com', 'password123'],
+          ['ai future labs', 'ras al khaimah', 'ai@example.com', 'password123']
+        ];
+        
+        let companyCount = 0;
+        testCompanies.forEach((company, index) => {
+          bcrypt.hash(company[3], 10).then(hashedPassword => {
+            connection.query(
+              'INSERT INTO company (name, location, email, password) VALUES (?, ?, ?, ?)',
+              [company[0], company[1], company[2], hashedPassword],
+              (err, result) => {
+                if (err) {
+                  console.error('error inserting company:', err);
+                } else {
+                  console.log('company inserted with id:', result.insertId);
+                  
+                  // insert internship for this company
+                  const internshipData = [
+                    ['Software Developer Intern', 'Remote', 'JavaScript, React, Node.js', 3000, '2024-06-01', '2024-08-31', '2024-05-15', 'Learn full-stack development with modern technologies'],
+                    ['Data Analyst Intern', 'On-site', 'Python, SQL, Excel', 2500, '2024-06-01', '2024-08-31', '2024-05-20', 'Analyze business data and create reports'],
+                    ['Marketing Intern', 'Remote', 'Social Media, Content Creation', 2000, '2024-07-01', '2024-09-30', '2024-06-15', 'Help with digital marketing campaigns'],
+                    ['UI/UX Design Intern', 'On-site', 'Figma, Adobe Creative Suite', 3500, '2024-06-15', '2024-09-15', '2024-06-01', 'Design user interfaces and user experiences'],
+                    ['Cybersecurity Intern', 'Remote', 'Network Security, Linux', 4000, '2024-07-01', '2024-10-01', '2024-06-30', 'Learn about cybersecurity and threat detection']
+                  ];
+                  
+                  if (internshipData[index]) {
+                    connection.query(
+                      'INSERT INTO internships (company_id, title, type, skills, salary, start_date, end_date, deadline, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                      [result.insertId, ...internshipData[index]],
+                      (err, internshipResult) => {
+                        if (err) {
+                          console.error('error inserting internship:', err);
+                        } else {
+                          console.log('internship inserted for company', result.insertId);
+                        }
+                      }
+                    );
+                  }
+                }
+                
+                companyCount++;
+                if (companyCount === testCompanies.length) {
+                  console.log('test data insertion completed');
+                }
+              }
+            );
+          });
+        });
+      } else {
+        console.log('companies already exist, skipping test data insertion');
+      }
+    });
 });
