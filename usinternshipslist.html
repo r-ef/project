@@ -1,14 +1,8 @@
 <html>
 <head>
-<<<<<<< HEAD
   <title>internships | internly</title>
   <link rel="stylesheet" href="style.css" />
   <script src="internshipsearch.js" defer></script>
-=======
-  <title>Internships | Internly</title>
-  <link rel="stylesheet" href="style.css" /><!--linking css file-->
-  <script src="internshipsearch.js" defer></script><!--linking javascsript file-->
->>>>>>> a39d0cb4a67430bf764a74702ee23c7fba71ac2a
 </head>
 <body class="ligbody">
 
@@ -37,7 +31,7 @@
             <td align="center"><select name="company" class="liginput" id="companyDropdown">
                 <option value="" disabled selected hidden>select...</option>
             </select></td>
-            <td align="center"><select name="seartype" class="liginput">
+            <td align="center"><select name="seartype" class="liginput" id="typeDropdown">
                 <option value="" disabled selected hidden>select...</option>
                 <option value="remote">remote</option>
                 <option value="on-site">on-site</option>
@@ -46,7 +40,10 @@
                 <option value="" disabled selected hidden>select...</option>
             </select></td>
             <td align="center"><input type="range" min="1000" max="8000" step="1000" value="1000" onchange="getSalary(this.value)" id="searsal"><span id="number">1000+ aed</span></td>
-            <td align="center"><button type="submit" class="smallbutn">search</button></td>
+            <td align="center">
+                <button type="submit" class="smallbutn">search</button>
+                <button type="button" class="smallbutn" onclick="clearFilters()" style="margin-left: 10px;">clear filters</button>
+            </td>
         </tr>
     </table>
   </form>
@@ -124,10 +121,8 @@ async function loadCompanies() {
     const companies = await response.json();
     const dropdown = document.getElementById('companyDropdown');
     dropdown.innerHTML = `
-      <select name="company" class="liginput">
-        <option value="" disabled selected hidden>Select...</option>
-        ${companies.map(company => `<option value="${company}">${company}</option>`).join('')}
-      </select>
+      <option value="" disabled selected hidden>Select...</option>
+      ${companies.map(company => `<option value="${company}">${company}</option>`).join('')}
     `;
   } catch (error) {
     console.error('Error loading companies:', error);
@@ -138,7 +133,7 @@ async function loadLocations() {
   try {
     const response = await fetch('http://localhost:3000/locations');
     const locations = await response.json();
-    const dropdown = document.querySelector('select[name="searloc"]');
+    const dropdown = document.getElementById('locationDropdown');
     dropdown.innerHTML = `
       <option value="" disabled selected hidden>Select...</option>
       ${locations.map(location => `<option value="${location}">${location}</option>`).join('')}
@@ -166,6 +161,18 @@ document.querySelector('.ligformmid').addEventListener('submit', function(event)
   
   loadInternships(filters);
 });
+
+function clearFilters() {
+  // Reset all filter fields
+  document.getElementById('companyDropdown').value = '';
+  document.getElementById('typeDropdown').value = '';
+  document.getElementById('locationDropdown').value = '';
+  document.getElementById('searsal').value = '1000';
+  document.getElementById('number').textContent = '1000+ aed';
+  
+  // Reload internships without any filters
+  loadInternships();
+}
 
 function formatDate(dateString) {
   if (!dateString) return 'N/A';

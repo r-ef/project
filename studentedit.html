@@ -3,7 +3,6 @@
     <title>edit student profile | internly</title>
     <link rel="stylesheet" href="style.css">
      <!-- linking the css file to this page -->
-    <script src="studentprofile.js" async></script> <!--li-->
 </head>
 <body class="ligbody"> <!--class for light appearance style-->
 
@@ -45,7 +44,7 @@
             </tr>
             <tr>
                 <td>Account Password:</td>
-                <td><input type="password" class="liginput" name="stud_pass" size="30"></td>
+                <td><input type="password" class="liginput" name="stud_pass" size="30" placeholder="Leave blank to keep current password"></td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -56,25 +55,87 @@
     </form>
     <!--students will be able to update whatever info they wish by filling out the necessary input-->
     <script>
+    // Load current student data when page loads
+    async function loadStudentData() {
+        try {
+            const response = await fetch('http://localhost:3000/student/profile', {
+                credentials: 'include'
+            });
+            
+            if (response.status === 401) {
+                alert('Please log in first');
+                window.location.href = 'studentsignin.html';
+                return;
+            }
+            
+            if (!response.ok) {
+                throw new Error('Failed to load profile data');
+            }
+            
+            const studentData = await response.json();
+            
+            // Pre-populate form fields
+            document.querySelector('input[name="stu_fname"]').value = studentData.fname || '';
+            document.querySelector('input[name="stu_lname"]').value = studentData.lname || '';
+            document.querySelector('input[name="stu_dob"]').value = studentData.dob || '';
+            document.querySelector('input[name="stu_email"]').value = studentData.email || '';
+            
+            // Set gender radio button
+            if (studentData.gender) {
+                const genderRadio = document.querySelector(`input[name="stu_gen"][value="${studentData.gender}"]`);
+                if (genderRadio) {
+                    genderRadio.checked = true;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading student data:', error);
+            alert('Failed to load profile data. Please try again.');
+        }
+    }
+
+    // Load data when page loads
+    loadStudentData();
+
     document.getElementById('studentEditForm').addEventListener('submit', async function(event) {
         event.preventDefault();
+        
         const fname = document.querySelector('input[name="stu_fname"]').value;
         const lname = document.querySelector('input[name="stu_lname"]').value;
         const dob = document.querySelector('input[name="stu_dob"]').value;
         const gender = document.querySelector('input[name="stu_gen"]:checked') ? document.querySelector('input[name="stu_gen"]:checked').value : '';
         const email = document.querySelector('input[name="stu_email"]').value;
         const password = document.querySelector('input[name="stud_pass"]').value;
-        const payload = { fname, lname, dob, gender, email, password };
-        const response = await fetch('http://localhost:3000/student/profile/edit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (response.ok) {
-            alert('Profile updated');
-            window.location.href = 'studentaccount.html';
-        } else {
-            alert('Update failed');
+        
+        // Only include password if it's not empty
+        const payload = { fname, lname, dob, gender, email };
+        if (password.trim()) {
+            payload.password = password;
+        }
+        
+        try {
+            const response = await fetch('http://localhost:3000/student/profile/edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(payload)
+            });
+            
+            if (response.status === 401) {
+                alert('Please log in first');
+                window.location.href = 'studentsignin.html';
+                return;
+            }
+            
+            if (response.ok) {
+                alert('Profile updated successfully');
+                window.location.href = 'studentaccount.html';
+            } else {
+                const errorData = await response.json();
+                alert('Update failed: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert('Update failed. Please try again.');
         }
     });
     </script>

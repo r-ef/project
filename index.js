@@ -413,6 +413,7 @@ app.get('/internships/:id', (req, res) => {
   );
 });
 
+// student logout route
 app.post('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -423,6 +424,8 @@ app.post('/logout', (req, res) => {
   });
 });
 
+
+// company logout
 app.post('/company/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -445,7 +448,6 @@ app.post('/student/logout', (req, res) => {
 
 app.get('/company/applications', (req, res) => {
   if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
-  // Get all internships for this company
   connection.query(
     `SELECT id, title FROM internships WHERE company_id = ?`,
     [req.session.companyId],
@@ -453,7 +455,6 @@ app.get('/company/applications', (req, res) => {
       if (err) return res.status(500).json({ error: 'db error' });
       if (!internships.length) return res.json([]);
       const internshipIds = internships.map(i => i.id);
-      // Get all applications for these internships
       connection.query(
         `SELECT a.*, s.fname as student_fname, s.lname as student_lname, s.email as student_email, s.dob as student_dob, s.gender as student_gender, i.title as internship_title
          FROM applications2 a
@@ -463,7 +464,6 @@ app.get('/company/applications', (req, res) => {
         [internshipIds],
         (err, applications) => {
           if (err) return res.status(500).json({ error: 'db error' });
-          // Don't send file_upload in the main list for performance
           const apps = applications.map(app => ({
             id: app.application_id,
             fname: app.student_fname,
@@ -475,7 +475,6 @@ app.get('/company/applications', (req, res) => {
             internship_title: app.internship_title,
             application_id: app.application_id,
             status: app.status || 'pending',
-            // For resume download, provide a download endpoint
             resume_url: `/company/applications/${app.application_id}/resume`
           }));
           res.json(apps);
@@ -485,14 +484,12 @@ app.get('/company/applications', (req, res) => {
   );
 });
 
-// Resume download endpoint
 app.get('/company/applications/:id/resume', (req, res) => {
   if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
   const appId = req.params.id;
   
   console.log('Resume download requested for application ID:', appId);
   
-  // Check if this application belongs to an internship of this company
   connection.query(
     `SELECT a.file_upload, s.fname, s.lname, i.title, i.company_id FROM applications2 a
      LEFT JOIN internships i ON a.internship = i.id
@@ -523,7 +520,6 @@ app.get('/company/applications/:id/resume', (req, res) => {
         return res.status(404).json({ error: 'No resume uploaded' });
       }
       
-      // Default to PDF since we don't have file type info in old records
       const contentType = 'application/pdf';
       const fileName = `${app.fname || 'resume'}_${app.lname || 'application'}.pdf`;
       
