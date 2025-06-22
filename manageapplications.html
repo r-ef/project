@@ -85,7 +85,7 @@ function displayApplications(applications) {
                 <strong>${app.internship_title || 'n/a'}</strong>
             </td>
             <td align="center">
-                <a href="${app.resume_url}" target="_blank" class="resume-link">download resume</a>
+                <a href="http://localhost:3000${app.resume_url}" target="_blank" class="resume-link">download resume</a>
             </td>
             <td align="center">
                 <span class="status-badge ${app.status}">${app.status.toUpperCase()}</span>
