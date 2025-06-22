@@ -20,38 +20,122 @@
     <form class="ligform" action="GET"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting data from the server-->
         <table class="signtab" border="0">
             <tr>
-                <td colspan="2" align="center"><h3>Student Account Details</h3></td>
+                <td colspan="2" align="center"><h3>student account details</h3></td>
             </tr>
             <tr>
-                <td>First Name:</td>
-                <td id="fname"></td>
+                <td>first name:</td>
+                <td id="fname">loading...</td>
             </tr>
             <tr>
-                <td>Last Name:</td>
-                <td id="lname"></td>
+                <td>last name:</td>
+                <td id="lname">loading...</td>
             </tr>
             <tr>
-                <td>Date of Birth:</td>
-                <td id="dob"></td>
+                <td>date of birth:</td>
+                <td id="dob">loading...</td>
             </tr>
             <tr>
-                <td>Gender:</td>
-                <td id="gend"></td>
+                <td>gender:</td>
+                <td id="gend">loading...</td>
             </tr>
             <tr>
-                <td>E-mail:</td>
-                <td id="emad"></td>
+                <td>e-mail:</td>
+                <td id="emad">loading...</td>
             </tr>
             <tr>
-                <td>Account Password:</td>
-                <td id="pass"></td>
+                <td>account password:</td>
+                <td id="pass">••••••••</td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="studentedit.html" method="_self"><button type="button" class="butn">Edit Profile</button></a>
+                    <a href="studentedit.html"><button type="button" class="butn">edit profile</button></a>
                 </td>
             </tr>
         </table>
     </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadStudentProfile();
+});
+
+async function loadStudentProfile() {
+    try {
+        console.log('loading student profile...');
+        const response = await fetch('http://localhost:3000/student/profile', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        console.log('response status:', response.status);
+
+        if (response.status === 401) {
+            alert('please sign in to view your profile');
+            window.location.href = 'studentsignin.html';
+            return;
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('response error:', errorText);
+            throw new Error(`failed to load profile: ${response.status}`);
+        }
+
+        const student = await response.json();
+        console.log('student data:', student);
+        
+        document.getElementById('fname').textContent = student.fname || 'n/a';
+        document.getElementById('lname').textContent = student.lname || 'n/a';
+        document.getElementById('dob').textContent = student.dob ? formatDate(student.dob) : 'n/a';
+        document.getElementById('gend').textContent = student.gender === 'f' ? 'female' : student.gender === 'm' ? 'male' : 'n/a';
+        document.getElementById('emad').textContent = student.email || 'n/a';
+
+    } catch (error) {
+        console.error('error loading student profile:', error);
+        document.getElementById('fname').textContent = 'error loading data';
+        document.getElementById('lname').textContent = 'error loading data';
+        document.getElementById('dob').textContent = 'error loading data';
+        document.getElementById('gend').textContent = 'error loading data';
+        document.getElementById('emad').textContent = 'error loading data';
+    }
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'n/a';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
+    event.preventDefault();
+    try {
+        const response = await fetch('http://localhost:3000/student/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            console.log('logged out successfully');
+        } else {
+            console.error('logout failed');
+        }
+    } catch (error) {
+        console.error('logout error:', error);
+    }
+    
+    window.location.href = 'home.html';
+});
+</script>
 </body>
 </html>
