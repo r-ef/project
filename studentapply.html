@@ -1,87 +1,174 @@
 <html>
     <head>
-        <title>Internship Application | Internly </title>
-
+        <title>internship application | internly </title>
         <link rel="stylesheet" href="style.css">
-        <!-- linking the css file to this page -->
-
     </head>
-    <body class="ligbody"> <!--class for light appearance style-->
+    <body class="ligbody">
 
         <ul id="navbar">
             <li class="dir" id="logo"><a href="studenthome.html" target="_self"> <img src="website logo.png" height="50" width="auto" /></a> </li>
-            <li class="dir" id="navtext"><a href="studenthome.html" target="_self">Home</a></li>
-            <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">Internships</a></li>
-            <li class="dir" id="navtext"><a href="studentapply.html" target="_self">Apply</a></li>
-            <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">Current Applications</a></li>
-            <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+            <li class="dir" id="navtext"><a href="studenthome.html" target="_self">home</a></li>
+            <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">internships</a></li>
+            <li class="dir" id="navtext"><a href="studentapply.html" target="_self">apply</a></li>
+            <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">current applications</a></li>
+            <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
             <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
         </ul>
 
-        <form class="ligform" id="studentApplyForm"> <!-- added id -->
-            <table class="signtab" border="0"> <!--adding a class to the table tag so that i may style it easily in the css file-->
+        <form class="ligform" id="studentApplyForm">
+            <table class="signtab" border="0">
                 <tr>
-                    <td colspan="2" align="center"><h3>Applicant Details</h3></td>
+                    <td colspan="2" align="center"><h3>applicant details</h3></td>
                 </tr>
                 <tr>
-                    <td>First Name:</td>
-                    <td><input type="text" class="liginput" name="stu_fname" size="30" required></td>
+                    <td>first name:</td>
+                    <td><input type="text" class="liginput" name="stu_fname" id="stu_fname" size="30" required></td>
                 </tr>
                 <tr>
-                    <td>Last Name:</td>
-                    <td><input type="text" class="liginput" name="stu_lname" size="30" required></td>
+                    <td>last name:</td>
+                    <td><input type="text" class="liginput" name="stu_lname" id="stu_lname" size="30" required></td>
                  </tr>
                  <tr>
-                    <td>Date of Birth:</td>
-                    <td><input type="date" class="ligdate" name="stu_dob" required></td>
+                    <td>date of birth:</td>
+                    <td><input type="date" class="ligdate" name="stu_dob" id="stu_dob" required></td>
                  </tr>
                  <tr>
-                    <td>Gender:</td>
-                    <td><input type="radio" class="liginput" name="stu_gen" value="f" required>Female
-                    <input type="radio" class="liginput" name="stu_gen" value="m" required>Male </td>
+                    <td>gender:</td>
+                    <td><input type="radio" class="liginput" name="stu_gen" value="f" required>female
+                    <input type="radio" class="liginput" name="stu_gen" value="m" required>male </td>
                  </tr>
                 <tr>
-                    <td>E-mail:</td>
-                    <td><input type="email" class="liginput" name="stu_email" size="30" required></td>
+                    <td>e-mail:</td>
+                    <td><input type="email" class="liginput" name="stu_email" id="stu_email" size="30" required></td>
                 </tr>
                 <tr>
-                    <td>Internship:</td>
-                    <td><span id="intselect"></span></td> <!--this is where the dropdown menu will be displayed for the users to select from, the span text will be called-->
+                    <td>internship:</td>
+                    <td>
+                        <select class="liginput" name="internship_id" id="internship_select" required>
+                            <option value="">select an internship...</option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
-                    <td>Resume Upload:</td>
-                    <td><input type="file" name="resume" style="margin-bottom: 15px;"></td> <!--creating some space with inline css since it's just one property-->
+                    <td>resume upload:</td>
+                    <td><input type="file" name="resume" accept=".pdf,.doc,.docx" style="margin-bottom: 15px;" required></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><input type="submit" class="butn" value="Apply"></td>
+                    <td colspan="2"><input type="submit" class="butn" value="apply"></td>
                 </tr>
             </table>
-            <!--a table created where the user will have to fill out the necessary details to sign up for the website. done by using input type text, email, password, date. 
-            these have been disabled as it will automatically fill up using nodejs based off of the student's details. all they have to do is add their resume.-->
-
         </form>
+
         <script>
+        // load student profile data and populate form
+        async function loadStudentProfile() {
+            try {
+                const response = await fetch('http://localhost:3000/student/profile', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const studentData = await response.json();
+                    document.getElementById('stu_fname').value = studentData.fname || '';
+                    document.getElementById('stu_lname').value = studentData.lname || '';
+                    document.getElementById('stu_dob').value = studentData.dob || '';
+                    document.getElementById('stu_email').value = studentData.email || '';
+                    
+                    // set gender radio button
+                    if (studentData.gender) {
+                        const genderRadios = document.querySelectorAll('input[name="stu_gen"]');
+                        genderRadios.forEach(radio => {
+                            if (radio.value === studentData.gender) {
+                                radio.checked = true;
+                            }
+                        });
+                    }
+                } else {
+                    console.error('failed to load student profile');
+                    window.location.href = 'studentsignin.html';
+                }
+            } catch (error) {
+                console.error('error loading student profile:', error);
+                window.location.href = 'studentsignin.html';
+            }
+        }
+
+        // load available internships and populate dropdown
+        async function loadInternships() {
+            try {
+                const response = await fetch('http://localhost:3000/internships', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const internships = await response.json();
+                    const select = document.getElementById('internship_select');
+                    
+                    // clear existing options except the first one
+                    select.innerHTML = '<option value="">select an internship...</option>';
+                    
+                    // add internship options
+                    internships.forEach(internship => {
+                        const option = document.createElement('option');
+                        option.value = internship.id;
+                        option.textContent = `${internship.title} - ${internship.company_name} (${internship.type})`;
+                        select.appendChild(option);
+                    });
+                } else {
+                    console.error('failed to load internships');
+                    document.getElementById('internship_select').innerHTML = '<option value="">error loading internships</option>';
+                }
+            } catch (error) {
+                console.error('error loading internships:', error);
+                document.getElementById('internship_select').innerHTML = '<option value="">error loading internships</option>';
+            }
+        }
+
+        // handle form submission
         document.getElementById('studentApplyForm').addEventListener('submit', async function(event) {
-          event.preventDefault();
-          const form = event.target;
-          const formData = new FormData(form);
-          const payload = new FormData();
-          payload.append('fname', formData.get('stu_fname'));
-          payload.append('lname', formData.get('stu_lname'));
-          payload.append('dob', formData.get('stu_dob'));
-          payload.append('gender', formData.get('stu_gen'));
-          payload.append('email', formData.get('stu_email'));
-          payload.append('resume', formData.get('resume'));
-          const response = await fetch('http://localhost:3000/student/apply', {
-            method: 'POST',
-            body: payload
-          });
-          if (response.ok) {
-            alert('Application submitted');
-            window.location.href = 'studenthome.html';
-          } else {
-            alert('Application failed');
-          }
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            // validate internship selection
+            const internshipId = formData.get('internship_id');
+            if (!internshipId) {
+                alert('please select an internship');
+                return;
+            }
+            
+            // validate resume upload
+            const resumeFile = formData.get('resume');
+            if (!resumeFile || resumeFile.size === 0) {
+                alert('please upload your resume');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/student/apply', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    alert('application submitted successfully!');
+                    window.location.href = 'studenthome.html';
+                } else {
+                    const errorData = await response.json();
+                    alert('application failed: ' + (errorData.error || 'unknown error'));
+                }
+            } catch (error) {
+                console.error('error submitting application:', error);
+                alert('application failed: network error');
+            }
+        });
+
+        // load data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStudentProfile();
+            loadInternships();
         });
         </script>
     </body>

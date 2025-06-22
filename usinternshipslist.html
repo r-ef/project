@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Internships | Internly</title>
+  <title>internships | internly</title>
   <link rel="stylesheet" href="style.css" />
   <script src="internshipsearch.js" defer></script>
 </head>
@@ -9,38 +9,38 @@
   <!-- Navigation Bar to go throught the other pages -->
   <ul id="navbar">
     <li class="dir" id="logo"><a href="home.html" target="_self"> <img src="website logo.png" height="50" width="auto" /></a> </li>
-    <li class="dir" id="navtext"><a href="home.html" target="_self">Home</a></li>
+    <li class="dir" id="navtext"><a href="home.html" target="_self">home</a></li>
     <li class="dir" id="navtext"><a href="usinternshipslist.html" target="_blank">Internships</a></li> <!-- internship list view file is different due to the different navigation bar available to logged in students and logged out ones-->
-    <li class="log" id="navtext"><a href="companysignin.html" target="_self">Employers / Post Internships</a></li>
-    <li class="log" id="navtext"><a href="studentsignin.html" target="_self">Sign in</a> </li>
+    <li class="log" id="navtext"><a href="companysignin.html" target="_self">company sign in</a></li>
+    <li class="log" id="navtext"><a href="studentsignin.html" target="_self">student sign in</a> </li>
   </ul>
 
 <form class="ligformmid"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
     <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
         <tr>
-            <th colspan="5" align="center"><h4>Filter options</h4></th>
+            <th colspan="5" align="center"><h4>filter options</h4></th>
         </tr>
         <tr>
-            <td align="center">Company</td>
-            <td align="center">Internship Type</td>
-            <td align="center">Location</td>
-            <td align="center">Salary</td>
+            <td align="center">company</td>
+            <td align="center">internship type</td>
+            <td align="center">location</td>
+            <td align="center">salary</td>
+            <td align="center">action</td>
         </tr>
         <tr>
-            <td id="compdrop" align="right"></td> <!--create a company list drop down here-->
+            <td align="center"><select name="company" class="liginput" id="companyDropdown">
+                <option value="" disabled selected hidden>select...</option>
+            </select></td>
             <td align="center"><select name="seartype" class="liginput">
-                <option value="" disabled selected hidden>Select...</option>
-                <option value="Remote">Remote</option>
-                <option value="On-site">On-site</option>
+                <option value="" disabled selected hidden>select...</option>
+                <option value="remote">remote</option>
+                <option value="on-site">on-site</option>
             </select></td>
-            <td align="center"><select name="searloc" class="liginput">
-                <option value="" disabled selected hidden>Select...</option>
-                <option value=""></option><!-- list of available locations-->
+            <td align="center"><select name="searloc" class="liginput" id="locationDropdown">
+                <option value="" disabled selected hidden>select...</option>
             </select></td>
-            <td align="center"><input type="range" min="1000" max="8000" step="1000" value="1000" onchange="getSalary(this.value)" id="searsal"><span id="number">1000+ AED</span>
-                <!--i created a range bar for the students to adjust it based on how much they want their salary to be, i also called a function which will display the value of said range next to it so the student knows what they have chosen-->
-            </select></td>
-            <td align="left"><input type="submit" class="smallbutn" value="Search"></td>
+            <td align="center"><input type="range" min="1000" max="8000" step="1000" value="1000" onchange="getSalary(this.value)" id="searsal"><span id="number">1000+ aed</span></td>
+            <td align="center"><button type="submit" class="smallbutn">search</button></td>
         </tr>
     </table>
   </form>
@@ -48,17 +48,17 @@
   <form class="ligappformbig" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
     <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
         <tr>
-            <th colspan="8" align="center"><h1>Available Internships</h1></th>
+            <th colspan="8" align="center"><h1>available internships</h1></th>
         </tr>
         <tr>
-          <th align="center">Company</th>
-          <th align="center">Internship <br /> Title</th>
-          <th align="center">Internship <br /> Type</th>
-          <th align="center">Skills Required</th>
-          <th align="center">Salary</th>
-          <th align="center">Duration</th>
-          <th align="center">Application <br /> Deadline</th>
-          <th align="center">Internship Details</th>
+          <th align="center">company</th>
+          <th align="center">internship <br /> title</th>
+          <th align="center">internship <br /> type</th>
+          <th align="center">skills required</th>
+          <th align="center">salary</th>
+          <th align="center">duration</th>
+          <th align="center">application <br /> deadline</th>
+          <th align="center">internship details</th>
         </tr>
         <tbody id="internshipsTableBody">
           <!-- Internships will be inserted here -->
@@ -116,9 +116,9 @@ async function loadCompanies() {
   try {
     const response = await fetch('http://localhost:3000/companies');
     const companies = await response.json();
-    const dropdown = document.getElementById('compdrop');
+    const dropdown = document.getElementById('companyDropdown');
     dropdown.innerHTML = `
-      <select name="searcomp" class="liginput">
+      <select name="company" class="liginput">
         <option value="" disabled selected hidden>Select...</option>
         ${companies.map(company => `<option value="${company}">${company}</option>`).join('')}
       </select>
@@ -146,7 +146,7 @@ document.querySelector('.ligformmid').addEventListener('submit', function(event)
   event.preventDefault();
   const formData = new FormData(event.target);
   const filters = {
-    company: formData.get('searcomp'),
+    company: formData.get('company'),
     type: formData.get('seartype'),
     location: formData.get('searloc'),
     salary: document.getElementById('searsal').value

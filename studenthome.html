@@ -17,12 +17,13 @@
         
         <div class="ligbox">
         <h2 class="homep" id="welcomeMessage">welcome back, [student name]!</h2>
-        <p class="homep">you have x applications in progress and x new internships have been posted.</p>
+        <p class="homep" id="statsMessage">you have x applications in progress and x new internships have been posted.</p>
         </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadStudentProfile();
+    loadDashboardStats();
 });
 
 async function loadStudentProfile() {
@@ -53,6 +54,50 @@ async function loadStudentProfile() {
 
     } catch (error) {
         console.error('error loading student profile:', error);
+    }
+}
+
+async function loadDashboardStats() {
+    try {
+        console.log('loading dashboard stats...');
+        const response = await fetch('http://localhost:3000/student/dashboard-stats', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        console.log('response status:', response.status);
+        console.log('response ok:', response.ok);
+
+        if (response.status === 401) {
+            console.log('unauthorized, redirecting to sign in');
+            window.location.href = 'studentsignin.html';
+            return;
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('response not ok:', errorText);
+            throw new Error(`failed to load stats: ${response.status} - ${errorText}`);
+        }
+
+        const stats = await response.json();
+        console.log('stats received:', stats);
+        
+        const statsMessage = document.getElementById('statsMessage');
+        const applicationsText = stats.applications_count === 1 ? 'application' : 'applications';
+        const internshipsText = stats.internships_count === 1 ? 'internship' : 'internships';
+        
+        const newText = `you have ${stats.applications_count} ${applicationsText} in progress and ${stats.internships_count} ${internshipsText} available.`;
+        console.log('setting stats message to:', newText);
+        statsMessage.textContent = newText;
+
+    } catch (error) {
+        console.error('error loading dashboard stats:', error);
+        document.getElementById('statsMessage').textContent = 'you have 0 applications in progress and 0 internships available.';
     }
 }
 

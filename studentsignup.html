@@ -4,67 +4,81 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body class="ligbody">
-        <img src="website logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
 
-        <form class="ligform" id="studentSignupForm">
+        <ul id="navbar">
+            <li class="dir" id="logo"><a href="home.html" target="_self"> <img src="website logo.png" height="50" width="auto" /></a> </li>
+            <li class="dir" id="navtext"><a href="home.html" target="_self">home</a></li>
+            <li class="log" id="navtext"><a href="studentsignin.html" target="_self">student sign in</a></li>
+            <li class="log" id="navtext"><a href="companysignin.html" target="_self">company sign in</a></li>
+        </ul>
+
+        <form class="ligform" id="studentSignUpForm">
             <table class="signtab" border="0">
                 <tr>
-                    <td colspan="2" align="center"><h3>sign up</h3></td>
+                    <td colspan="2" align="center"><h3>student sign up</h3></td>
                 </tr>
                 <tr>
                     <td>first name:</td>
-                    <td><input type="text" class="liginput" name="stu_fname" size="30" required></td>
+                    <td><input type="text" class="liginput" name="firstname" size="30" required></td>
                 </tr>
                 <tr>
                     <td>last name:</td>
-                    <td><input type="text" class="liginput" name="stu_lname" size="30" required></td>
-                 </tr>
-                 <tr>
+                    <td><input type="text" class="liginput" name="lastname" size="30" required></td>
+                </tr>
+                <tr>
                     <td>date of birth:</td>
-                    <td><input type="date" class="ligdate" name="stu_dob" required></td>
-                 </tr>
-                 <tr>
+                    <td><input type="date" class="ligdate" name="dob" required></td>
+                </tr>
+                <tr>
                     <td>gender:</td>
-                    <td><input type="radio" class="liginput" name="stu_gen" value="f" required>female
-                    <input type="radio" class="liginput" name="stu_gen" value="m" required>male</td>
-                 </tr>
+                    <td><input type="radio" class="liginput" name="gender" value="f" required>female
+                    <input type="radio" class="liginput" name="gender" value="m" required>male</td>
+                </tr>
                 <tr>
                     <td>email:</td>
-                    <td><input type="email" class="liginput" name="stu_email" size="30" required></td>
+                    <td><input type="email" class="liginput" name="email" size="30" required></td>
                 </tr>
                 <tr>
                     <td>password:</td>
-                    <td><input type="password" class="liginput" name="stud_pass" size="30" required></td>
+                    <td><input type="password" class="liginput" name="password" size="30" required></td>
                 </tr>
                 <tr>
                     <td colspan="2"><input type="submit" class="butn" value="sign up"></td>
                 </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <p>already have an account? <a href="studentsignin.html">sign in here</a></p>
+                    </td>
+                </tr>
             </table>
         </form>
-    </body>
-    <script>
-    document.getElementById('studentSignupForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const firstname = document.querySelector('input[name="stu_fname"]').value;
-        const lastname = document.querySelector('input[name="stu_lname"]').value;
-        const dob = document.querySelector('input[name="stu_dob"]').value;
-        const gender = document.querySelector('input[name="stu_gen"]').value;
-        const email = document.querySelector('input[name="stu_email"]').value;
-        const password = document.querySelector('input[name="stud_pass"]').value;
-        if (email && password) {
+
+        <script>
+        document.getElementById('studentSignUpForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
             const response = await fetch('http://localhost:3000/studentsignup', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ firstname, lastname, dob, gender, email, password })
+                body: JSON.stringify({
+                    firstname: formData.get('firstname'),
+                    lastname: formData.get('lastname'),
+                    dob: formData.get('dob'),
+                    gender: formData.get('gender'),
+                    email: formData.get('email'),
+                    password: formData.get('password')
+                })
             });
             if (response.ok) {
-                alert('sign up successful');
                 window.location.href = 'studenthome.html';
             } else {
-                alert('sign up failed');
+                const error = await response.json();
+                alert(error.error || 'sign up failed');
             }
-        }
-    });
-    </script>
+        });
+        </script>
+    </body>
 </html>

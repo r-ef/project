@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Company Account | Internly </title>
+    <title>edit company profile | internly</title>
     <link rel="stylesheet" href="style.css">
      <!-- linking the css file to this page -->
 </head>
@@ -8,59 +8,97 @@
 
     <ul id="darnavbar">
         <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
-        <li class="dir" id="navtext"><a href="companyhome.html" target="_self">Home</a></li>
-        <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">Manage Internships</a></li>
-        <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">Manage Applications</a></li>
-        <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+        <li class="dir" id="navtext"><a href="companyhome.html" target="_self">home</a></li>
+        <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">manage internships</a></li>
+        <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">manage applications</a></li>
+        <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
         <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
     </ul>
 
-    <form class="darform" id="companyEditForm"> <!-- added id -->
+    <form class="darform" id="companyEditForm">
         <table class="signtab" border="0">
             <tr>
-                <td colspan="2" align="center"><h3>Edit Account Details</h3></td>
+                <td colspan="2" align="center"><h3>edit profile</h3></td>
             </tr>
             <tr>
-                <td>Company Name:</td>
-                <td><input type="text" class="darinput" name="com_name" size="30"></td>
+                <td>company name:</td>
+                <td><input type="text" class="darinput" name="name" id="name" size="30"></td>
             </tr>
             <tr>
-                <td>Company Location:</td>
-                <td><input type="text" class="darinput" name="com_loc" size="30"></td>
+                <td>location:</td>
+                <td><input type="text" class="darinput" name="location" id="location" size="30"></td>
             </tr>
             <tr>
-                <td>Company E-mail:</td>
-                <td><input type="email" class="darinput" name="stu_email" size="30" required></td>
+                <td>email:</td>
+                <td><input type="email" class="darinput" name="email" id="email" size="30"></td>
             </tr>
             <tr>
-                <td>Account Password:</td>
-                <td><input type="password" class="darinput" name="stud_pass" size="30" required></td>
+                <td>new password:</td>
+                <td><input type="password" class="darinput" name="password" size="30" placeholder="leave blank to keep current"></td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <button type="submit" class="butn">Save Changes</button>
-                </td>
+                <td colspan="2"><input type="submit" class="butn" value="update profile"></td>
             </tr>
         </table>
     </form>
+
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadCompanyProfile();
+    });
+
+    async function loadCompanyProfile() {
+        try {
+            const response = await fetch('http://localhost:3000/company/profile', {
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const companyData = await response.json();
+                document.getElementById('name').value = companyData.name || '';
+                document.getElementById('location').value = companyData.location || '';
+                document.getElementById('email').value = companyData.email || '';
+            } else {
+                window.location.href = 'companysignin.html';
+            }
+        } catch (error) {
+            console.error('error loading company profile:', error);
+            window.location.href = 'companysignin.html';
+        }
+    }
+
     document.getElementById('companyEditForm').addEventListener('submit', async function(event) {
         event.preventDefault();
-        const name = document.querySelector('input[name="com_name"]').value;
-        const location = document.querySelector('input[name="com_loc"]').value;
-        const email = document.querySelector('input[name="stu_email"]').value;
-        const password = document.querySelector('input[name="stud_pass"]').value;
-        const payload = { name, location, email, password };
-        const response = await fetch('http://localhost:3000/company/profile/edit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (response.ok) {
-            alert('Profile updated');
-            window.location.href = 'companyaccount.html';
-        } else {
-            alert('Update failed');
+        
+        const formData = new FormData(event.target);
+        const updateData = {};
+        
+        // only include fields that have values
+        if (formData.get('name')) updateData.name = formData.get('name');
+        if (formData.get('location')) updateData.location = formData.get('location');
+        if (formData.get('email')) updateData.email = formData.get('email');
+        if (formData.get('password')) updateData.password = formData.get('password');
+        
+        try {
+            const response = await fetch('http://localhost:3000/company/profile/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(updateData)
+            });
+            
+            if (response.ok) {
+                alert('profile updated successfully');
+                window.location.href = 'companyaccount.html';
+            } else {
+                const error = await response.json();
+                alert('failed to update profile: ' + (error.error || 'unknown error'));
+            }
+        } catch (error) {
+            console.error('error updating profile:', error);
+            alert('failed to update profile: network error');
         }
     });
     </script>

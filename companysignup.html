@@ -4,56 +4,70 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body class="darbody">
-        <img src="website admin logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
 
-        <form class="darform" id="companySignupForm">
+        <ul id="darnavbar">
+            <li class="dir" id="logo"><a href="home.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
+            <li class="dir" id="navtext"><a href="home.html" target="_self">home</a></li>
+            <li class="log" id="navtext"><a href="studentsignin.html" target="_self">student sign in</a></li>
+            <li class="log" id="navtext"><a href="companysignin.html" target="_self">company sign in</a></li>
+        </ul>
+
+        <form class="darform" id="companySignUpForm">
             <table class="signtab" border="0">
                 <tr>
-                    <td colspan="2" align="center"><h3>sign up</h3></td>
+                    <td colspan="2" align="center"><h3>company sign up</h3></td>
                 </tr>
                 <tr>
                     <td>company name:</td>
-                    <td><input type="text" class="darinput" name="com_name" size="30" required></td>
+                    <td><input type="text" class="darinput" name="name" size="30" required></td>
                 </tr>
                 <tr>
                     <td>location:</td>
-                    <td><input type="text" class="darinput" name="com_location" size="30" required></td>
+                    <td><input type="text" class="darinput" name="location" size="30" required></td>
                 </tr>
                 <tr>
                     <td>email:</td>
-                    <td><input type="email" class="darinput" name="com_email" size="30" required></td>
+                    <td><input type="email" class="darinput" name="email" size="30" required></td>
                 </tr>
                 <tr>
                     <td>password:</td>
-                    <td><input type="password" class="darinput" name="com_pass" size="30" required></td>
+                    <td><input type="password" class="darinput" name="password" size="30" required></td>
                 </tr>
                 <tr>
                     <td colspan="2"><input type="submit" class="butn" value="sign up"></td>
                 </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <p>already have an account? <a href="companysignin.html">sign in here</a></p>
+                    </td>
+                </tr>
             </table>
         </form>
-    </body>
-    <script>
-    document.getElementById('companySignupForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const name = document.querySelector('input[name="com_name"]').value;
-        const location = document.querySelector('input[name="com_location"]').value;
-        const email = document.querySelector('input[name="com_email"]').value;
-        const password = document.querySelector('input[name="com_pass"]').value;
-        if (email && password) {
+
+        <script>
+        document.getElementById('companySignUpForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
             const response = await fetch('http://localhost:3000/companysignup', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, location, email, password })
+                body: JSON.stringify({
+                    name: formData.get('name'),
+                    location: formData.get('location'),
+                    email: formData.get('email'),
+                    password: formData.get('password')
+                })
             });
             if (response.ok) {
-                alert('sign up successful');
                 window.location.href = 'companyhome.html';
             } else {
-                alert('sign up failed');
+                const error = await response.json();
+                alert(error.error || 'sign up failed');
             }
-        }
-    });
-    </script>
+        });
+        </script>
+    </body>
 </html>

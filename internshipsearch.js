@@ -5,10 +5,16 @@ document.addEventListener('DOMContentLoaded', function() {
     loadLocations();
 });
 
-async function loadInternships() {
+async function loadInternships(filters = {}) {
     console.log('loading internships...');
     try {
-        const response = await fetch('http://localhost:3000/internships', {
+        let url = 'http://localhost:3000/internships';
+        if (Object.keys(filters).length > 0) {
+            const params = new URLSearchParams(filters);
+            url += '/filter?' + params.toString();
+        }
+        
+        const response = await fetch(url, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -28,30 +34,22 @@ async function loadInternships() {
     } catch (error) {
         console.error('error loading internships:', error);
         document.getElementById('internshipsTableBody').innerHTML = 
-            '<tr><td colspan="8" align="center">error loading internships</td></tr>';
+            '<tr><td colspan="8" style="color:red">error loading internships</td></tr>';
     }
 }
 
 async function loadCompanies() {
     console.log('loading companies...');
     try {
-        const response = await fetch('http://localhost:3000/companies', {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        console.log('companies response status:', response.status);
-
-        if (!response.ok) {
-            throw new Error('failed to load companies');
-        }
-
+        const response = await fetch('http://localhost:3000/companies');
         const companies = await response.json();
-        console.log('companies loaded:', companies);
-        populateCompanyDropdown(companies);
+        const dropdown = document.getElementById('companyDropdown');
+        dropdown.innerHTML = `
+            <select name="company" class="liginput">
+                <option value="" disabled selected hidden>select...</option>
+                ${companies.map(company => `<option value="${company}">${company}</option>`).join('')}
+            </select>
+        `;
     } catch (error) {
         console.error('error loading companies:', error);
     }
@@ -60,60 +58,18 @@ async function loadCompanies() {
 async function loadLocations() {
     console.log('loading locations...');
     try {
-        const response = await fetch('http://localhost:3000/locations', {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        console.log('locations response status:', response.status);
-
-        if (!response.ok) {
-            throw new Error('failed to load locations');
-        }
-
+        const response = await fetch('http://localhost:3000/locations');
         const locations = await response.json();
-        console.log('locations loaded:', locations);
-        populateLocationDropdown(locations);
+        const dropdown = document.getElementById('locationDropdown');
+        dropdown.innerHTML = `
+            <select name="searloc" class="liginput">
+                <option value="" disabled selected hidden>select...</option>
+                ${locations.map(location => `<option value="${location}">${location}</option>`).join('')}
+            </select>
+        `;
     } catch (error) {
         console.error('error loading locations:', error);
     }
-}
-
-function populateCompanyDropdown(companies) {
-    const dropdown = document.getElementById('companyDropdown');
-    if (!dropdown) {
-        console.error('company dropdown not found');
-        return;
-    }
-    
-    console.log('populating company dropdown with:', companies);
-    dropdown.innerHTML = '<option value="" disabled selected hidden>select...</option>';
-    companies.forEach(company => {
-        const option = document.createElement('option');
-        option.value = company;
-        option.textContent = company;
-        dropdown.appendChild(option);
-    });
-}
-
-function populateLocationDropdown(locations) {
-    const dropdown = document.getElementById('locationDropdown');
-    if (!dropdown) {
-        console.error('location dropdown not found');
-        return;
-    }
-    
-    console.log('populating location dropdown with:', locations);
-    dropdown.innerHTML = '<option value="" disabled selected hidden>select...</option>';
-    locations.forEach(location => {
-        const option = document.createElement('option');
-        option.value = location;
-        option.textContent = location;
-        dropdown.appendChild(option);
-    });
 }
 
 function displayInternships(internships) {
@@ -131,7 +87,7 @@ function displayInternships(internships) {
         return;
     }
     
-    const html = internships.map(internship => `
+    container.innerHTML = internships.map(internship => `
         <tr>
             <td align="center">${internship.company_name || 'n/a'}</td>
             <td align="center">${internship.title || 'n/a'}</td>
@@ -143,8 +99,6 @@ function displayInternships(internships) {
             <td align="center">${internship.description || 'n/a'}</td>
         </tr>
     `).join('');
-    
-    container.innerHTML = html;
     console.log('internships displayed successfully');
 }
 
@@ -206,15 +160,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function getSalary(value) {
-    const numberElement = document.getElementById('number');
-    if (numberElement) {
-        numberElement.textContent = value + '+ aed';
-    }
+    document.getElementById('number').textContent = value + '+ aed';
 }
 
 function formatDate(dateString) {
     if (!dateString) return 'n/a';
-    return new Date(dateString).toLocaleDateString();
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

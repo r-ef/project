@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Manage Applications | Internly </title>
+    <title>manage applications | internly</title>
     <link rel="stylesheet" href="style.css">
      <!-- linking the css file to this page -->
 </head>
@@ -8,34 +8,200 @@
 
     <ul id="darnavbar">
         <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
-        <li class="dir" id="navtext"><a href="companyhome.html" target="_self">Home</a></li>
-        <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">Manage Internships</a></li>
-        <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">Manage Applications</a></li>
-        <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+        <li class="dir" id="navtext"><a href="companyhome.html" target="_self">home</a></li>
+        <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">manage internships</a></li>
+        <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">manage applications</a></li>
+        <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
         <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
     </ul>
 
-    <form class="darappform" action="POST"><!--adding a class to the form tag so that i may style it easily in the css file, using post action as i am uploading data to the server-->
+    <div class="darappform">
         <table class="signtab" border="0" width="100%">
             <tr>
-                <th colspan="3" align="center"><h1>Applicants</h1></td>
+                <th colspan="6" align="center"><h1>manage applications</h1></th>
             </tr>
             <tr>
-                <th align="center">Applicant Details</th> 
-                <th align="center">Resume</th>
-                <th align="center">Approval</th>
+                <th align="center">applicant name</th>
+                <th align="center">email</th>
+                <th align="center">internship</th>
+                <th align="center">resume</th>
+                <th align="center">status</th>
+                <th align="center">actions</th>
             </tr>
-            <tr>
-                <td id="manapp"></td> <!--where list of applicants will start-->
-                <td></td>
-                <td align="center"><input type="radio" class="darinput" name="approval" value="f" required>Accepted
-                <input type="radio" class="darinput" name="stu_gen" value="approval" required>Rejected 
-                <input type="submit" value="Send Response" class="smallbutn"></td>
-            </tr>
-            <tr>
-                <td id="stuapp"></td> <!-- where the list of student applications will start -->
-            </tr>
+            <tbody id="applicationsTableBody">
+                <!-- applications will be loaded here -->
+            </tbody>
         </table>
-    </form>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadApplications();
+});
+
+async function loadApplications() {
+    try {
+        const response = await fetch('http://localhost:3000/company/applications', {
+            credentials: 'include'
+        });
+        
+        if (response.status === 401) {
+            alert('please sign in to manage applications.');
+            window.location.href = 'companysignin.html';
+            return;
+        }
+        
+        if (!response.ok) {
+            throw new Error('failed to load applications');
+        }
+        
+        const applications = await response.json();
+        displayApplications(applications);
+    } catch (error) {
+        console.error('error loading applications:', error);
+        document.getElementById('applicationsTableBody').innerHTML = 
+            '<tr><td colspan="6" style="color:red">error loading applications</td></tr>';
+    }
+}
+
+function displayApplications(applications) {
+    const container = document.getElementById('applicationsTableBody');
+    
+    if (!applications.length) {
+        container.innerHTML = '<tr><td colspan="6" align="center">no applications found</td></tr>';
+        return;
+    }
+    
+    container.innerHTML = applications.map(app => `
+        <tr>
+            <td align="center">
+                <strong>${app.fname || 'n/a'} ${app.lname || 'n/a'}</strong><br>
+                <small>dob: ${formatDate(app.dob)} | gender: ${app.gender || 'n/a'}</small>
+            </td>
+            <td align="center">
+                <a href="mailto:${app.email}">${app.email || 'n/a'}</a>
+            </td>
+            <td align="center">
+                <strong>${app.internship_title || 'n/a'}</strong>
+            </td>
+            <td align="center">
+                <a href="${app.resume_url}" target="_blank" class="resume-link">download resume</a>
+            </td>
+            <td align="center">
+                <span class="status-badge ${app.status}">${app.status.toUpperCase()}</span>
+            </td>
+            <td align="center">
+                ${app.status === 'pending' ? `
+                    <button onclick="updateStatus(${app.id}, 'accepted')" class="accept-btn">accept</button>
+                    <button onclick="updateStatus(${app.id}, 'rejected')" class="reject-btn">reject</button>
+                ` : `
+                    <span class="status-updated">status updated</span>
+                `}
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function updateStatus(applicationId, status) {
+    try {
+        const response = await fetch(`http://localhost:3000/company/applications/${applicationId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ status })
+        });
+        
+        if (response.ok) {
+            alert(`application ${status} successfully`);
+            loadApplications(); // reload the list
+        } else {
+            const error = await response.json();
+            alert('failed to update status: ' + (error.error || 'unknown error'));
+        }
+    } catch (error) {
+        console.error('error updating status:', error);
+        alert('failed to update status: network error');
+    }
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'n/a';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+</script>
+
+<style>
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: #ff9800;
+    color: white;
+}
+
+.status-badge.accepted {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-badge.rejected {
+    background-color: #f44336;
+    color: white;
+}
+
+.accept-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.reject-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.accept-btn:hover {
+    background-color: #45a049;
+}
+
+.reject-btn:hover {
+    background-color: #da190b;
+}
+
+.resume-link {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.resume-link:hover {
+    text-decoration: underline;
+}
+
+.status-updated {
+    color: #666;
+    font-style: italic;
+}
+</style>
 </body>
 </html>

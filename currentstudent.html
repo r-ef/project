@@ -1,36 +1,132 @@
 <html>
 <head>
-  <title>Current Applications | Internly</title>
+  <title>current applications | internly</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="ligbody">
 
-  <!-- Navigation Bar to go throught the other pages -->
+  <!-- navigation Bar to go throught the other pages -->
   <ul id="navbar">
     <li class="dir" id="logo"><a href="studenthome.html" target="_self"><img src="website logo.png" height="50" width="auto" /></a></li>
-    <li class="dir" id="navtext"><a href="studenthome.html" target="_self">Home</a></li>
-    <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">Internships</a></li>
-    <li class="dir" id="navtext"><a href="studentapply.html" target="_self">Apply</a></li>
-    <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">Current Applications</a></li>
-    <li class="log" id="navtext"><a href="home.html" target="_self">Log out</a></li>
+    <li class="dir" id="navtext"><a href="studenthome.html" target="_self">home</a></li>
+    <li class="dir" id="navtext"><a href="internshipslist.html" target="_blank">internships</a></li>
+    <li class="dir" id="navtext"><a href="studentapply.html" target="_self">apply</a></li>
+    <li class="dir" id="navtext"><a href="currentstudent.html" target="_self">current applications</a></li>
+    <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
     <li class="log" id="navtext"><a href="studentaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto" /></a></li>
   </ul>
 
-  <form class="ligappform" action="GET"><!--adding a class to the form tag so that i may style it easily in the css file, using get action as i am requesting to get data from the server-->
+  <div class="ligappform">
     <table class="signtab" border="0" width="100%"> <!-- adding a class to the table tag so that i may style it easily in the css file, making the width 100% so the contents spread out-->
         <tr>
-            <th colspan="4" align="center"><h1>Current Applications</h1></th>
+            <th colspan="4" align="center"><h1>current applications</h1></th>
         </tr>
         <tr>
-          <th align="center">Internship</th>
-          <th align="center">Company</th>
-          <th align="center">Date Applied</th>
-          <th align="center">Status</th>
+          <th align="center">internship</th>
+          <th align="center">company</th>
+          <th align="center">date applied</th>
+          <th align="center">status</th>
         </tr>
-        <tr>
-            <td id="currapp"></td> <!-- where the list of the students outgoing applications will start-->
-        </tr>
+        <tbody id="applicationsTableBody">
+          <!-- applications will be loaded here -->
+        </tbody>
     </table>
-  </form>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadStudentApplications();
+});
+
+async function loadStudentApplications() {
+    try {
+        const response = await fetch('http://localhost:3000/student/applications', {
+            credentials: 'include'
+        });
+        
+        if (response.status === 401) {
+            alert('please sign in to view your applications.');
+            window.location.href = 'studentsignin.html';
+            return;
+        }
+        
+        if (!response.ok) {
+            throw new Error('failed to load applications');
+        }
+        
+        const applications = await response.json();
+        displayApplications(applications);
+    } catch (error) {
+        console.error('error loading applications:', error);
+        document.getElementById('applicationsTableBody').innerHTML = 
+            '<tr><td colspan="4" style="color:red">error loading applications</td></tr>';
+    }
+}
+
+function displayApplications(applications) {
+    const container = document.getElementById('applicationsTableBody');
+    
+    if (!applications.length) {
+        container.innerHTML = '<tr><td colspan="4" align="center">no applications found. <a href="studentapply.html">apply for an internship</a></td></tr>';
+        return;
+    }
+    
+    container.innerHTML = applications.map(app => `
+        <tr>
+            <td align="center">
+                <strong>${app.internship_title || 'n/a'}</strong><br>
+                <small>${app.internship_type || 'n/a'}</small>
+            </td>
+            <td align="center">
+                <strong>${app.company_name || 'n/a'}</strong><br>
+                <small>${app.company_location || 'n/a'}</small>
+            </td>
+            <td align="center">
+                ${formatDate(app.applied_at)}
+            </td>
+            <td align="center">
+                <span class="status-badge ${app.status}">${app.status.toUpperCase()}</span>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'n/a';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+</script>
+
+<style>
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: #ff9800;
+    color: white;
+}
+
+.status-badge.accepted {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-badge.rejected {
+    background-color: #f44336;
+    color: white;
+}
+</style>
 </body>
 </html>

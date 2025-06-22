@@ -7,71 +7,75 @@
 
   <!-- Navigation Bar -->
   <ul id="darnavbar">
-    <li class="dir" id="logo"><a href="companyhome.html" target="_self"> <img src="website admin logo.png" height="50" width="auto" /></a> </li>
+    <li class="dir" id="logo"><a href="companyhome.html" target="_self"><img src="website admin logo.png" height="50" width="auto" /></a></li>
     <li class="dir" id="navtext"><a href="companyhome.html" target="_self">home</a></li>
     <li class="dir" id="navtext"><a href="manageinternships.html" target="_self">manage internships</a></li>
     <li class="dir" id="navtext"><a href="manageapplications.html" target="_self">manage applications</a></li>
     <li class="log" id="navtext"><a href="home.html" target="_self">log out</a></li>
-    <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
+    <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto" /></a></li>
   </ul>
 
   <!-- Edit Internship Form -->
-  <form class="darform" id="editInternshipForm">
-    <table class="signtab" border="0">
-      <tr>
-        <td colspan="2" align="center"><h3>edit internship</h3></td>
-      </tr>
-      <tr>
-        <td>title:</td>
-        <td><input type="text" class="darinput" name="title" id="title" required></td>
-      </tr>
-      <tr>
-        <td>type:</td>
-        <td>
-          <select name="type" class="darinput" id="type" required>
-            <option value="">select type</option>
-            <option value="Remote">remote</option>
-            <option value="On-site">on-site</option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>skills required:</td>
-        <td><input type="text" class="darinput" name="skills" id="skills" required></td>
-      </tr>
-      <tr>
-        <td>salary (aed):</td>
-        <td><input type="number" class="darinput" name="salary" id="salary" min="1000" required></td>
-      </tr>
-      <tr>
-        <td>start date:</td>
-        <td><input type="date" class="darinput" name="start_date" id="start_date" required></td>
-      </tr>
-      <tr>
-        <td>end date:</td>
-        <td><input type="date" class="darinput" name="end_date" id="end_date" required></td>
-      </tr>
-      <tr>
-        <td>application deadline:</td>
-        <td><input type="date" class="darinput" name="deadline" id="deadline" required></td>
-      </tr>
-      <tr>
-        <td>description:</td>
-        <td><textarea class="darinput" name="description" id="description" rows="3" required></textarea></td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          <button type="submit" class="butn">update internship</button>
-          <button type="button" class="butn" onclick="window.location.href='manageinternships.html'" style="background-color: #6c757d; margin-left: 10px;">cancel</button>
-        </td>
-      </tr>
-    </table>
-  </form>
+  <div class="darappform">
+    <h2>edit internship</h2>
+    <form id="editInternshipForm" class="darform">
+      <table class="signtab" border="0">
+        <tr>
+          <td>title:</td>
+          <td><input type="text" class="darinput" name="title" id="title" size="30" required></td>
+        </tr>
+        <tr>
+          <td>type:</td>
+          <td>
+            <select class="darinput" name="type" id="type" required>
+              <option value="">select type...</option>
+              <option value="summer">summer</option>
+              <option value="fall">fall</option>
+              <option value="spring">spring</option>
+              <option value="winter">winter</option>
+              <option value="year-round">year-round</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>skills required:</td>
+          <td><input type="text" class="darinput" name="skills" id="skills" size="30" required></td>
+        </tr>
+        <tr>
+          <td>salary (per month):</td>
+          <td><input type="number" class="darinput" name="salary" id="salary" size="30" required></td>
+        </tr>
+        <tr>
+          <td>start date:</td>
+          <td><input type="date" class="darinput" name="start_date" id="start_date" required></td>
+        </tr>
+        <tr>
+          <td>end date:</td>
+          <td><input type="date" class="darinput" name="end_date" id="end_date" required></td>
+        </tr>
+        <tr>
+          <td>application deadline:</td>
+          <td><input type="date" class="darinput" name="deadline" id="deadline" required></td>
+        </tr>
+        <tr>
+          <td>description:</td>
+          <td><textarea class="darinput" name="description" id="description" rows="4" cols="30" required></textarea></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="submit" class="butn" value="update internship">
+            <button type="button" class="butn" onclick="window.location.href='manageinternships.html'" style="margin-left: 10px;">cancel</button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
 
 <script>
 let internshipId = null;
 
 document.addEventListener('DOMContentLoaded', function() {
+    // get internship id from url
     const urlParams = new URLSearchParams(window.location.search);
     internshipId = urlParams.get('id');
     
@@ -81,34 +85,30 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    loadInternshipData();
+    loadInternship();
 });
 
-async function loadInternshipData() {
+async function loadInternship() {
     try {
         const response = await fetch(`http://localhost:3000/internships/${internshipId}`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            credentials: 'include'
         });
-
+        
         if (response.status === 401) {
-            alert('please sign in to edit internships');
+            alert('please sign in to edit internships.');
             window.location.href = 'companysignin.html';
             return;
         }
-
+        
         if (!response.ok) {
-            throw new Error('failed to load internship data');
+            throw new Error('failed to load internship');
         }
-
+        
         const internship = await response.json();
         populateForm(internship);
     } catch (error) {
-        console.error('error loading internship data:', error);
-        alert('error loading internship data');
+        console.error('error loading internship:', error);
+        alert('error loading internship');
         window.location.href = 'manageinternships.html';
     }
 }
@@ -138,27 +138,27 @@ document.getElementById('editInternshipForm').addEventListener('submit', async f
         deadline: formData.get('deadline'),
         description: formData.get('description')
     };
-
+    
     try {
         const response = await fetch(`http://localhost:3000/internships/${internshipId}`, {
             method: 'PUT',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(internshipData)
         });
-
+        
         if (response.ok) {
-            alert('internship updated successfully!');
+            alert('internship updated successfully');
             window.location.href = 'manageinternships.html';
         } else {
-            const errorData = await response.json();
-            alert('failed to update internship: ' + (errorData.error || 'unknown error'));
+            const error = await response.json();
+            alert('failed to update internship: ' + (error.error || 'unknown error'));
         }
     } catch (error) {
         console.error('error updating internship:', error);
-        alert('error updating internship');
+        alert('failed to update internship: network error');
     }
 });
 

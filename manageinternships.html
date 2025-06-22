@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>internships | internly</title>
+  <title>manage internships | internly</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="darbody">
@@ -15,142 +15,149 @@
         <li class="log" id="navtext"><a href="companyaccount.html" target="_self"><img src="profile icon.png" height="20" width="auto"/></a></li>
     </ul>
 
-  <form class="darappformbig" action="GET">
-    <table class="signtab" border="0" width="100%">
+  <div class="darappform">
+    <h2>post new internship</h2>
+    <form id="internshipForm" class="darform">
+      <table class="signtab" border="0">
         <tr>
-            <th colspan="9" align="center"><h1>manage internships</h1></th>
+          <td>title:</td>
+          <td><input type="text" class="darinput" name="title" size="30" required></td>
         </tr>
         <tr>
-          <th align="center">internship <br /> title</th>
-          <th align="center">internship <br /> type</th>
-          <th align="center">skills required</th>
-          <th align="center">salary</th>
-          <th align="center">duration</th>
-          <th align="center">application <br /> deadline</th>
-          <th align="center">internship details</th>
-          <th align="center">actions</th>
+          <td>type:</td>
+          <td>
+            <select class="darinput" name="type" required>
+              <option value="">select type...</option>
+              <option value="summer">summer</option>
+              <option value="fall">fall</option>
+              <option value="spring">spring</option>
+              <option value="winter">winter</option>
+              <option value="year-round">year-round</option>
+            </select>
+          </td>
         </tr>
-        <tbody id="internshipsTableBody">
-          <!-- Internships will be loaded here -->
-        </tbody>
-    </table>
-  </form>
+        <tr>
+          <td>skills required:</td>
+          <td><input type="text" class="darinput" name="skills" size="30" required></td>
+        </tr>
+        <tr>
+          <td>salary (per month):</td>
+          <td><input type="number" class="darinput" name="salary" size="30" required></td>
+        </tr>
+        <tr>
+          <td>start date:</td>
+          <td><input type="date" class="darinput" name="start_date" required></td>
+        </tr>
+        <tr>
+          <td>end date:</td>
+          <td><input type="date" class="darinput" name="end_date" required></td>
+        </tr>
+        <tr>
+          <td>application deadline:</td>
+          <td><input type="date" class="darinput" name="deadline" required></td>
+        </tr>
+        <tr>
+          <td>description:</td>
+          <td><textarea class="darinput" name="description" rows="4" cols="30" required></textarea></td>
+        </tr>
+        <tr>
+          <td colspan="2"><input type="submit" class="butn" value="post internship"></td>
+        </tr>
+      </table>
+    </form>
 
-  <!-- Create New Internship Form -->
-  <form class="darform" id="createInternshipForm">
-    <table class="signtab" border="0">
-        <tr>
-            <td colspan="2" align="center"><h3>create new internship</h3></td>
-        </tr>
-        <tr>
-            <td>title:</td>
-            <td><input type="text" class="darinput" name="title" required></td>
-        </tr>
-        <tr>
-            <td>type:</td>
-            <td>
-                <select name="type" class="darinput" required>
-                    <option value="">select type</option>
-                    <option value="Remote">remote</option>
-                    <option value="On-site">on-site</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>skills required:</td>
-            <td><input type="text" class="darinput" name="skills" required></td>
-        </tr>
-        <tr>
-            <td>salary (aed):</td>
-            <td><input type="number" class="darinput" name="salary" min="1000" required></td>
-        </tr>
-        <tr>
-            <td>start date:</td>
-            <td><input type="date" class="darinput" name="start_date" required></td>
-        </tr>
-        <tr>
-            <td>end date:</td>
-            <td><input type="date" class="darinput" name="end_date" required></td>
-        </tr>
-        <tr>
-            <td>application deadline:</td>
-            <td><input type="date" class="darinput" name="deadline" required></td>
-        </tr>
-        <tr>
-            <td>description:</td>
-            <td><textarea class="darinput" name="description" rows="3" required></textarea></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <button type="submit" class="butn">create internship</button>
-            </td>
-        </tr>
-    </table>
-  </form>
+    <h2>current internships</h2>
+    <div id="internshipsList">
+      <!-- internships will be loaded here -->
+    </div>
+  </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    loadCompanyInternships();
+    loadInternships();
 });
 
-async function loadCompanyInternships() {
+async function loadInternships() {
     try {
         const response = await fetch('http://localhost:3000/company/internships', {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            credentials: 'include'
         });
-
+        
         if (response.status === 401) {
-            alert('please sign in to manage internships');
+            alert('please sign in to manage internships.');
             window.location.href = 'companysignin.html';
             return;
         }
-
+        
         if (!response.ok) {
             throw new Error('failed to load internships');
         }
-
+        
         const internships = await response.json();
         displayInternships(internships);
     } catch (error) {
         console.error('error loading internships:', error);
-        document.getElementById('internshipsTableBody').innerHTML = 
-            '<tr><td colspan="8" align="center">error loading internships</td></tr>';
+        document.getElementById('internshipsList').innerHTML = '<p style="color:red">error loading internships</p>';
     }
 }
 
 function displayInternships(internships) {
-    const container = document.getElementById('internshipsTableBody');
+    const container = document.getElementById('internshipsList');
     
-    if (internships.length === 0) {
-        container.innerHTML = '<tr><td colspan="8" align="center">no internships found</td></tr>';
+    if (!internships.length) {
+        container.innerHTML = '<p>no internships posted yet</p>';
         return;
     }
     
-    const html = internships.map(internship => `
-        <tr>
-            <td align="center">${internship.title || 'n/a'}</td>
-            <td align="center">${internship.type || 'n/a'}</td>
-            <td align="center">${internship.skills || 'n/a'}</td>
-            <td align="center">${internship.salary ? internship.salary + ' aed' : 'n/a'}</td>
-            <td align="center">${formatDate(internship.start_date)} - ${formatDate(internship.end_date)}</td>
-            <td align="center">${formatDate(internship.deadline)}</td>
-            <td align="center">${internship.description || 'n/a'}</td>
-            <td align="center">
-                <button onclick="editInternship(${internship.id})" class="smallbutn">edit</button>
-                <button onclick="deleteInternship(${internship.id})" class="smallbutn" style="background-color: #dc3545;">delete</button>
-            </td>
-        </tr>
+    container.innerHTML = internships.map(internship => `
+        <div class="internship-item" data-id="${internship.id}">
+            <h3>${internship.title}</h3>
+            <p><strong>type:</strong> ${internship.type}</p>
+            <p><strong>skills:</strong> ${internship.skills}</p>
+            <p><strong>salary:</strong> $${internship.salary}/month</p>
+            <p><strong>dates:</strong> ${formatDate(internship.start_date)} - ${formatDate(internship.end_date)}</p>
+            <p><strong>deadline:</strong> ${formatDate(internship.deadline)}</p>
+            <p><strong>description:</strong> ${internship.description}</p>
+            <div class="internship-actions">
+                <button onclick="editInternship(${internship.id})" class="edit-btn">edit</button>
+                <button onclick="deleteInternship(${internship.id})" class="delete-btn">delete</button>
+            </div>
+        </div>
     `).join('');
-    
-    container.innerHTML = html;
 }
 
-document.getElementById('createInternshipForm').addEventListener('submit', async function(event) {
+async function deleteInternship(internshipId) {
+    if (!confirm('are you sure you want to delete this internship?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`http://localhost:3000/internships/${internshipId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            alert('internship deleted successfully');
+            loadInternships();
+        } else {
+            const error = await response.json();
+            alert('failed to delete internship: ' + (error.error || 'unknown error'));
+        }
+    } catch (error) {
+        console.error('error deleting internship:', error);
+        alert('failed to delete internship: network error');
+    }
+}
+
+function editInternship(internshipId) {
+    // redirect to edit page
+    window.location.href = `internshipedit.html?id=${internshipId}`;
+}
+
+document.getElementById('internshipForm').addEventListener('submit', async function(event) {
     event.preventDefault();
+    
     const formData = new FormData(event.target);
     const internshipData = {
         title: formData.get('title'),
@@ -162,63 +169,39 @@ document.getElementById('createInternshipForm').addEventListener('submit', async
         deadline: formData.get('deadline'),
         description: formData.get('description')
     };
-
+    
     try {
         const response = await fetch('http://localhost:3000/internships', {
             method: 'POST',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(internshipData)
         });
-
+        
         if (response.ok) {
-            alert('internship created successfully!');
+            alert('internship posted successfully');
             event.target.reset();
-            loadCompanyInternships();
+            loadInternships();
         } else {
-            alert('failed to create internship');
+            const error = await response.json();
+            alert('failed to post internship: ' + (error.error || 'unknown error'));
         }
     } catch (error) {
-        console.error('error creating internship:', error);
-        alert('error creating internship');
+        console.error('error posting internship:', error);
+        alert('failed to post internship: network error');
     }
 });
 
-function editInternship(id) {
-    if (confirm('edit internship? this will redirect to an edit page.')) {
-        window.location.href = `internshipedit.html?id=${id}`;
-    }
-}
-
-async function deleteInternship(id) {
-    if (confirm('are you sure you want to delete this internship?')) {
-        try {
-            const response = await fetch(`http://localhost:3000/internships/${id}`, {
-                method: 'DELETE',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                alert('internship deleted successfully!');
-                loadCompanyInternships();
-            } else {
-                alert('failed to delete internship');
-            }
-        } catch (error) {
-            console.error('error deleting internship:', error);
-            alert('error deleting internship');
-        }
-    }
-}
-
 function formatDate(dateString) {
     if (!dateString) return 'n/a';
-    return new Date(dateString).toLocaleDateString();
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
 }
 
 document.querySelector('a[href="home.html"]').addEventListener('click', async function(event) {
@@ -244,5 +227,46 @@ document.querySelector('a[href="home.html"]').addEventListener('click', async fu
     window.location.href = 'home.html';
 });
 </script>
+
+<style>
+.internship-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.internship-actions {
+    margin-top: 10px;
+}
+
+.edit-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background-color: #1976D2;
+}
+
+.delete-btn:hover {
+    background-color: #d32f2f;
+}
+</style>
 </body>
 </html>

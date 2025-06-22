@@ -16,12 +16,13 @@
         
         <div class="darbox">
         <h2 class="homep" id="welcomeMessage">welcome back, [company name]!</h2>
-        <p class="homep">you have x internship postings and x applications pending for approval.</p>
+        <p class="homep" id="statsMessage">you have x internship postings and x applications pending for approval.</p>
         </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadCompanyProfile();
+    loadDashboardStats();
 });
 
 async function loadCompanyProfile() {
@@ -51,6 +52,40 @@ async function loadCompanyProfile() {
 
     } catch (error) {
         console.error('error loading company profile:', error);
+    }
+}
+
+async function loadDashboardStats() {
+    try {
+        const response = await fetch('http://localhost:3000/company/dashboard-stats', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            window.location.href = 'companysignin.html';
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`failed to load stats: ${response.status}`);
+        }
+
+        const stats = await response.json();
+        
+        const statsMessage = document.getElementById('statsMessage');
+        const internshipsText = stats.internships_count === 1 ? 'internship posting' : 'internship postings';
+        const applicationsText = stats.pending_applications_count === 1 ? 'application' : 'applications';
+        
+        statsMessage.textContent = `you have ${stats.internships_count} ${internshipsText} and ${stats.pending_applications_count} ${applicationsText} pending for approval.`;
+
+    } catch (error) {
+        console.error('error loading dashboard stats:', error);
+        document.getElementById('statsMessage').textContent = 'you have 0 internship postings and 0 applications pending for approval.';
     }
 }
 

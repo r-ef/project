@@ -1,62 +1,63 @@
 <html>
     <head>
-        <title>sign in | internly</title>
+        <title>student sign in | internly</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body class="ligbody">
-        <img src="website logo.png" height="60" width="134" style="display: block; margin-top: 50px; margin-left: auto; margin-right: auto;" />
 
-        <form class="ligform" id="studentSigninForm">
+        <ul id="navbar">
+            <li class="dir" id="logo"><a href="home.html" target="_self"> <img src="website logo.png" height="50" width="auto" /></a> </li>
+            <li class="dir" id="navtext"><a href="home.html" target="_self">home</a></li>
+            <li class="log" id="navtext"><a href="studentsignin.html" target="_self">student sign in</a></li>
+            <li class="log" id="navtext"><a href="companysignin.html" target="_self">company sign in</a></li>
+        </ul>
+
+        <form class="ligform" id="studentSignInForm">
             <table class="signtab" border="0">
                 <tr>
-                    <td colspan="2" align="center"><h3>sign in</h3></td>
+                    <td colspan="2" align="center"><h3>student sign in</h3></td>
                 </tr>
                 <tr>
                     <td>email:</td>
-                    <td><input type="email" class="liginput" name="stu_email" size="30" required></td>
+                    <td><input type="email" class="liginput" name="email" size="30" required></td>
                 </tr>
                 <tr>
                     <td>password:</td>
-                    <td><input type="password" class="liginput" name="stud_pass" size="30" required></td>
-                </tr>
-                <tr>    
-                    <td colspan="2"><input type="submit" class="butn" value="sign in"></td>
-                </tr>
-            </table>
-        </form>
-
-        <form class="ligform">
-            <table class="signtab" border="0">
-                <tr> 
-                    <td><h3>don't have an account? <br />
-                    sign up now!</h3></td>
+                    <td><input type="password" class="liginput" name="password" size="30" required></td>
                 </tr>
                 <tr>
-                    <td><a href="studentsignup.html"><button type="button" class="butn">sign up</button></a></td>
+                    <td colspan="2"><input type="submit" class="butn" value="sign in"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <p>don't have an account? <a href="studentsignup.html">sign up here</a></p>
+                    </td>
                 </tr>
             </table>
         </form>
-    </body>
 
-    <script>
-    document.getElementById('studentSigninForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const email = document.querySelector('input[name="stu_email"]').value;
-        const password = document.querySelector('input[name="stud_pass"]').value;
-        if (email && password) {
+        <script>
+        document.getElementById('studentSignInForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
             const response = await fetch('http://localhost:3000/studentsignin', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({
+                    email: formData.get('email'),
+                    password: formData.get('password')
+                })
             });
             if (response.ok) {
-                alert('sign in successful');
                 window.location.href = 'studenthome.html';
             } else {
-                alert('sign in failed');
+                const error = await response.json();
+                alert(error.error || 'sign in failed');
             }
-        }
-    });
-    </script>
+        });
+        </script>
+    </body>
 </html>

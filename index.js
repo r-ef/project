@@ -36,7 +36,7 @@ const connection = mysql.createConnection({
 studentTableQuery = "CREATE TABLE IF NOT EXISTS student2 (id INT PRIMARY KEY AUTO_INCREMENT, fname VARCHAR(255), lname VARCHAR(255), dob DATE, gender VARCHAR(1), email VARCHAR(255), password VARCHAR(255))"
 companyTableQuery = "CREATE TABLE IF NOT EXISTS company (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), location VARCHAR(255), email VARCHAR(255), password VARCHAR(255))"
 internshipsTableQuery = "CREATE TABLE IF NOT EXISTS internships (id INT PRIMARY KEY AUTO_INCREMENT, company_id INT, title VARCHAR(255), type VARCHAR(255), skills VARCHAR(255), salary INT, start_date DATE, end_date DATE, deadline DATE, description VARCHAR(255), FOREIGN KEY (company_id) REFERENCES company(id))"
-applicationsTableQuery = "CREATE TABLE IF NOT EXISTS applications2 (id INT PRIMARY KEY, fname VARCHAR(255), lname VARCHAR(255), dob DATE, gender VARCHAR(1), email VARCHAR(255), file_upload BLOB, internship VARCHAR(255))"
+applicationsTableQuery = "CREATE TABLE IF NOT EXISTS applications2 (application_id INT PRIMARY KEY AUTO_INCREMENT, student_id INT, fname VARCHAR(255), lname VARCHAR(255), dob DATE, gender VARCHAR(1), email VARCHAR(255), file_upload BLOB, file_name VARCHAR(255), file_type VARCHAR(255), internship INT, status VARCHAR(20) DEFAULT 'pending', applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (student_id) REFERENCES student2(id), FOREIGN KEY (internship) REFERENCES internships(id))"
 
 
 connection.connect((err) => {
@@ -235,13 +235,22 @@ app.post('/company/profile/edit', async (req, res) => {
 
 app.post('/student/apply', upload.single('resume'), (req, res) => {
   if (!req.session.studentId) return res.status(401).json({ error: 'Not authenticated' });
-  const { fname, lname, dob, gender, email } = req.body;
+  const { fname, lname, dob, gender, email, internship_id } = req.body;
   const file_upload = req.file ? req.file.buffer : null;
+  const file_name = req.file ? req.file.originalname : null;
+  const file_type = req.file ? req.file.mimetype : null;
+  
+  console.log('Application submission:', { fname, lname, internship_id, file_name, file_type });
+  
   connection.query(
-    `INSERT INTO applications2 (id, fname, lname, dob, gender, email, file_upload) VALUES (?, ?, ?, ?, ?, ?, ?)` ,
-    [req.session.studentId, fname, lname, dob, gender, email, file_upload],
+    `INSERT INTO applications2 (student_id, fname, lname, dob, gender, email, file_upload, file_name, file_type, internship) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)` ,
+    [req.session.studentId, fname, lname, dob, gender, email, file_upload, file_name, file_type, internship_id],
     (err, result) => {
-      if (err) return res.status(500).json({ error: 'Database error' });
+      if (err) {
+        console.error('database error in application submission:', err);
+        return res.status(500).json({ error: 'database error' });
+      }
+      console.log('Application submitted successfully:', result.insertId);
       res.status(201).json({ message: 'app submitted' });
     }
   );
@@ -434,72 +443,241 @@ app.post('/student/logout', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-    console.log("server started");
-    
-    // insert test data if no companies exist
-    connection.query('SELECT COUNT(*) as count FROM company', (err, results) => {
+app.get('/company/applications', (req, res) => {
+  if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
+  // Get all internships for this company
+  connection.query(
+    `SELECT id, title FROM internships WHERE company_id = ?`,
+    [req.session.companyId],
+    (err, internships) => {
+      if (err) return res.status(500).json({ error: 'db error' });
+      if (!internships.length) return res.json([]);
+      const internshipIds = internships.map(i => i.id);
+      // Get all applications for these internships
+      connection.query(
+        `SELECT a.*, s.fname as student_fname, s.lname as student_lname, s.email as student_email, s.dob as student_dob, s.gender as student_gender, i.title as internship_title
+         FROM applications2 a
+         LEFT JOIN student2 s ON a.student_id = s.id
+         LEFT JOIN internships i ON a.internship = i.id
+         WHERE a.internship IN (?)`,
+        [internshipIds],
+        (err, applications) => {
+          if (err) return res.status(500).json({ error: 'db error' });
+          // Don't send file_upload in the main list for performance
+          const apps = applications.map(app => ({
+            id: app.application_id,
+            fname: app.student_fname,
+            lname: app.student_lname,
+            email: app.student_email,
+            dob: app.student_dob,
+            gender: app.student_gender,
+            internship_id: app.internship,
+            internship_title: app.internship_title,
+            application_id: app.application_id,
+            status: app.status || 'pending',
+            // For resume download, provide a download endpoint
+            resume_url: `/company/applications/${app.application_id}/resume`
+          }));
+          res.json(apps);
+        }
+      );
+    }
+  );
+});
+
+// Resume download endpoint
+app.get('/company/applications/:id/resume', (req, res) => {
+  if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
+  const appId = req.params.id;
+  
+  console.log('Resume download requested for application ID:', appId);
+  
+  // Check if this application belongs to an internship of this company
+  connection.query(
+    `SELECT a.file_upload, s.fname, s.lname, i.title, i.company_id FROM applications2 a
+     LEFT JOIN internships i ON a.internship = i.id
+     LEFT JOIN student2 s ON a.student_id = s.id
+     WHERE a.application_id = ?`,
+    [appId],
+    (err, results) => {
       if (err) {
-        console.error('error checking company count:', err);
-        return;
+        console.error('database error in resume download:', err);
+        return res.status(500).json({ error: 'database error' });
       }
       
-      if (results[0].count === 0) {
-        console.log('inserting test companies...');
-        const testCompanies = [
-          ['tech solutions inc', 'dubai', 'tech@example.com', 'password123'],
-          ['digital innovations', 'abu dhabi', 'digital@example.com', 'password123'],
-          ['creative agency', 'sharjah', 'creative@example.com', 'password123'],
-          ['cyber security pro', 'ajman', 'cyber@example.com', 'password123'],
-          ['ai future labs', 'ras al khaimah', 'ai@example.com', 'password123']
-        ];
-        
-        let companyCount = 0;
-        testCompanies.forEach((company, index) => {
-          bcrypt.hash(company[3], 10).then(hashedPassword => {
-            connection.query(
-              'INSERT INTO company (name, location, email, password) VALUES (?, ?, ?, ?)',
-              [company[0], company[1], company[2], hashedPassword],
-              (err, result) => {
-                if (err) {
-                  console.error('error inserting company:', err);
-                } else {
-                  console.log('company inserted with id:', result.insertId);
-                  
-                  // insert internship for this company
-                  const internshipData = [
-                    ['Software Developer Intern', 'Remote', 'JavaScript, React, Node.js', 3000, '2024-06-01', '2024-08-31', '2024-05-15', 'Learn full-stack development with modern technologies'],
-                    ['Data Analyst Intern', 'On-site', 'Python, SQL, Excel', 2500, '2024-06-01', '2024-08-31', '2024-05-20', 'Analyze business data and create reports'],
-                    ['Marketing Intern', 'Remote', 'Social Media, Content Creation', 2000, '2024-07-01', '2024-09-30', '2024-06-15', 'Help with digital marketing campaigns'],
-                    ['UI/UX Design Intern', 'On-site', 'Figma, Adobe Creative Suite', 3500, '2024-06-15', '2024-09-15', '2024-06-01', 'Design user interfaces and user experiences'],
-                    ['Cybersecurity Intern', 'Remote', 'Network Security, Linux', 4000, '2024-07-01', '2024-10-01', '2024-06-30', 'Learn about cybersecurity and threat detection']
-                  ];
-                  
-                  if (internshipData[index]) {
-                    connection.query(
-                      'INSERT INTO internships (company_id, title, type, skills, salary, start_date, end_date, deadline, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                      [result.insertId, ...internshipData[index]],
-                      (err, internshipResult) => {
-                        if (err) {
-                          console.error('error inserting internship:', err);
-                        } else {
-                          console.log('internship inserted for company', result.insertId);
-                        }
-                      }
-                    );
-                  }
-                }
-                
-                companyCount++;
-                if (companyCount === testCompanies.length) {
-                  console.log('test data insertion completed');
-                }
-              }
-            );
-          });
-        });
-      } else {
-        console.log('companies already exist, skipping test data insertion');
+      if (!results.length) {
+        console.log('Application not found:', appId);
+        return res.status(404).json({ error: 'Application not found' });
       }
-    });
+      
+      const app = results[0];
+      console.log('Application found:', app);
+      
+      if (app.company_id != req.session.companyId) {
+        console.log('Forbidden: Company ID mismatch');
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+      
+      if (!app.file_upload) {
+        console.log('No resume uploaded for application:', appId);
+        return res.status(404).json({ error: 'No resume uploaded' });
+      }
+      
+      // Default to PDF since we don't have file type info in old records
+      const contentType = 'application/pdf';
+      const fileName = `${app.fname || 'resume'}_${app.lname || 'application'}.pdf`;
+      
+      console.log('Sending file:', fileName, 'Content-Type:', contentType);
+      
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      res.setHeader('Content-Type', contentType);
+      res.send(app.file_upload);
+    }
+  );
+});
+
+// updating the application status
+app.put('/company/applications/:id/status', (req, res) => {
+  if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
+  const { status } = req.body;
+  const appId = req.params.id;
+  
+  if (!['accepted', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status. Must be "accepted" or "rejected"' });
+  }
+  
+  // checking if the application belongs to the company
+  connection.query(
+    `SELECT a.application_id, i.company_id FROM applications2 a
+     LEFT JOIN internships i ON a.internship = i.id
+     WHERE a.application_id = ?`,
+    [appId],
+    (err, results) => {
+      if (err || !results.length) return res.status(404).json({ error: 'Application not found' });
+      const app = results[0];
+      if (app.company_id != req.session.companyId) return res.status(403).json({ error: 'Forbidden' });
+      
+      // updating the application status
+      connection.query(
+        `UPDATE applications2 SET status = ? WHERE application_id = ?`,
+        [status, appId],
+        (err, result) => {
+          if (err) return res.status(500).json({ error: 'database error' });
+          res.json({ message: `Application ${status} successfully` });
+        }
+      );
+    }
+  );
+});
+
+// getting the applications for a specific student
+app.get('/student/applications', (req, res) => {
+  if (!req.session.studentId) return res.status(401).json({ error: 'Not authenticated' });
+  
+  connection.query(
+    `SELECT a.application_id, a.status, a.applied_at, i.title as internship_title, i.type as internship_type, c.name as company_name, c.location as company_location
+     FROM applications2 a
+     LEFT JOIN internships i ON a.internship = i.id
+     LEFT JOIN company c ON i.company_id = c.id
+     WHERE a.student_id = ?
+     ORDER BY a.applied_at DESC`,
+    [req.session.studentId],
+    (err, results) => {
+      if (err) {
+        console.error('database error in student applications:', err);
+        return res.status(500).json({ error: 'database error' });
+      }
+      
+      const applications = results.map(app => ({
+        application_id: app.application_id,
+        internship_title: app.internship_title,
+        internship_type: app.internship_type,
+        company_name: app.company_name,
+        company_location: app.company_location,
+        status: app.status || 'pending',
+        applied_at: app.applied_at
+      }));
+      
+      res.json(applications);
+    }
+  );
+});
+
+// getting the student dashboard stats
+app.get('/student/dashboard-stats', (req, res) => {
+  console.log('Student dashboard stats requested');
+  if (!req.session.studentId) {
+    console.log('No student session found');
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+  
+  console.log('Student ID:', req.session.studentId);
+  
+  // getting the applications count for the student
+  connection.query(
+    `SELECT COUNT(*) as applications_count FROM applications2 WHERE student_id = ?`,
+    [req.session.studentId],
+    (err, appResults) => {
+      if (err) {
+        console.error('Error getting applications count:', err);
+        return res.status(500).json({ error: 'database error' });
+      }
+      
+      console.log('Applications count:', appResults[0].applications_count);
+      
+      // getting the total internships count (for "new internships" - we'll show total available)
+      connection.query(
+        `SELECT COUNT(*) as internships_count FROM internships WHERE deadline >= CURDATE()`,
+        (err, intResults) => {
+          if (err) {
+            console.error('Error getting internships count:', err);
+            return res.status(500).json({ error: 'database error' });
+          }
+          
+          console.log('Internships count:', intResults[0].internships_count);
+          
+          const response = {
+            applications_count: appResults[0].applications_count,
+            internships_count: intResults[0].internships_count
+          };
+          
+          console.log('Sending response:', response);
+          res.json(response);
+        }
+      );
+    }
+  );
+});
+
+// getting company dashboard stats
+app.get('/company/dashboard-stats', (req, res) => {
+  if (!req.session.companyId) return res.status(401).json({ error: 'Not authenticated' });
+  
+  connection.query(
+    `SELECT COUNT(*) as internships_count FROM internships WHERE company_id = ?`,
+    [req.session.companyId],
+    (err, intResults) => {
+      if (err) return res.status(500).json({ error: 'database error' });
+      
+      connection.query(
+        `SELECT COUNT(*) as pending_applications_count 
+         FROM applications2 a
+         LEFT JOIN internships i ON a.internship = i.id
+         WHERE i.company_id = ? AND a.status = 'pending'`,
+        [req.session.companyId],
+        (err, appResults) => {
+          if (err) return res.status(500).json({ error: 'database error' });
+          
+          res.json({
+            internships_count: intResults[0].internships_count,
+            pending_applications_count: appResults[0].pending_applications_count
+          });
+        }
+      );
+    }
+  );
+});
+
+app.listen(3000, () => {
+    console.log("server started");
 });
